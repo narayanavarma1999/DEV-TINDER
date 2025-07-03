@@ -13,41 +13,97 @@ dotenv.config()
 
 app.use(express.json())
 
-app.use('/api', (req, res, next) => {
-    console.log('Runs for all methods starting with /api');
-    //next();
-    res.send(`Hello world`)
-});
+/* 
+*   creates an user in the database with 
+*   @param req.body
+*   where user sends is details
+*/
 
-
-app.get('/test', (req, res, next) => {
+app.post('/signup', async (req, res) => {
     try {
-        throw new Error(`error in Test`)
+        console.log(`in post call ${JSON.stringify(req.body)}`)
+        const userData = new User(req.body);
+        await User.create(userData)
+        res.status(201).send(`User Created Successfully`)
     } catch (error) {
-        console.log(`error in test:${error.message}`)
+        console.log(`Error while creating  user:${error.message}`)
+        res.status(422).send(`Failed to create user`)
+    }
+}
+)
+
+/* 
+*  fetches all the user details with emailId
+*/
+
+app.get('/user', async (req, res) => {
+    try {
+        const emailId = req.body.emailId;
+        const user = await User.find({ emailId });
+        if (!user) {
+            res.status(404).send('User not found')
+        }
+        res.status(200).send(user)
+    } catch (error) {
+        console.log(`Error while fetching user:${error.message}`)
+        res.status(400).send(`Failed to fetch user`)
     }
 })
 
 
-app.post('/signup', (req, res) => {
-    console.log(`in post call ${JSON.stringify(req.body)}`)
-    const { firstName, lastName, emailId, password, age, gender } = req.body
-    const userData = { firstName, lastName, emailId, password, age, gender }
-    User.create(userData)
-}
-)
+/* 
+*  fetches all the user details
+*/
+
+app.get('/feed', async (req, res) => {
+    try {
+        const users = await User.find();
+        if (!users) {
+            res.status(404).send('User not found')
+        }
+        res.status(200).send(users)
+    } catch (error) {
+        console.log(`Error while fetching user:${error.message}`)
+        res.status(400).send(`Failed to fetch users`)
+    }
+})
+
+/* 
+* update user details based on their userId
+*/
+
+app.patch('/user', async (req, res) => {
+    try {
+        const userId = req.body.userId
+        const data = req.body
+        const user = await User.findByIdAndUpdate(userId, data)
+        res.status(204).send('User has been updated successfully')
+    } catch (error) {
+        console.log(`Error while updating user:${error.message}`)
+        res.status(400).send(`Failed to update user`)
+    }
+})
+
+/* 
+*  delete an user based on userId
+*/
+
+app.delete('/user', async (req, res) => {
+    const userId = req.query.userId
+    try {
+        await User.findByIdAndDelete(userId)
+        res.status(200).send('User has been successfully Deleted')
+    } catch (error) {
+        console.log(`Error while fetching user:${error.message}`)
+        res.status(422).send(`Failed to delete user`)
+    }
+})
 
 
 app.use('/', (err, req, res, next) => {
     console.log(`something went wrong in final call with error message:${err.message}`)
     res.send("Something went wrong " + err.message)
 })
-
-
-app.all('/admin', (req, res) => {
-    console.log('in admin ')
-    res.send(`Handled ${req.method} request to /admin`);
-});
 
 
 /* 
@@ -62,7 +118,6 @@ mongooseConnection().then(() => {
     app.listen(port, () => {
         console.log(`Server is running on port: ${port} `)
     })
-
 }).catch((error) => {
     console.error(`Error while connecting to Database:${error.message}`)
 })
