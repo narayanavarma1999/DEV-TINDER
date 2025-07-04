@@ -68,9 +68,8 @@ app.post('/login', async (req, res) => {
         /*
          *  create a JWT token  
          */
+        const token = await user.getJWT()
 
-        const secretKey = process.env.JWT_SECRET_KEY
-        const token = jwt.sign({ _id: user._id }, secretKey, { expiresIn: '1d' })
         res.cookie("token", token, { expires: new Date(Date.now() + 8 * 360000) })
         res.status(200).send('Login Successfully')
     } catch (error) {

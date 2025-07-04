@@ -59,3 +59,4 @@ retrieving user information based upon the cookie from profile api
 
 add userAuth middleware to route handler for authentication
 set the expiry for JWT token and cookies to 7 days 
+created user jwt token in schema methods
