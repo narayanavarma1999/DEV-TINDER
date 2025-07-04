@@ -8,7 +8,7 @@ const profileRouter = express.Router()
  *  profile  api which fetches all the user details
  */
 
-profileRouter.get('/profile', userAuth, async (req, res) => {
+profileRouter.get('/', userAuth, async (req, res) => {
     try {
         const user = req.user
         res.status(200).json(user)

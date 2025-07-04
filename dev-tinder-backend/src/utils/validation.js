@@ -2,7 +2,7 @@ const validator = require('validator');
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt')
 
-const validateSignUpData = (req) => {
+const validateSignUpData = async(req) => {
 
     const { firstName, lastName, emailId, password } = req.body
 
@@ -22,9 +22,9 @@ const validateSignUpData = (req) => {
         throw new Error('Please Ensure you provide a Strong Password')
     }
 
-    const user = User.findOne({ emailId })
+    const user = await User.findOne({ emailId })
 
-    if (!user) {
+    if (user) {
         throw new Error('EmailId Already Exists')
     }
 }

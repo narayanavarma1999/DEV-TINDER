@@ -2,7 +2,6 @@ const { mongooseConnection } = require('./config/database.connection')
 const User = require('./models/user.model')
 const express = require('express');
 const cookieParser = require('cookie-parser')
-const jwt = require('jsonwebtoken')
 const authRouter = require('./routes/auth.routes')
 const profileRouter = require('./routes/profile.route')
 const revirewRequestRouter = require('./routes/review.requests.route')
@@ -22,15 +21,22 @@ app.use(express.json())
 
 app.use(cookieParser())
 
+app.use('/auth', authRouter)
 
+app.use('/user', userRouter)
 
+app.use('/profile', profileRouter)
+
+app.use('/request/send', sendRequestRouter)
+
+app.use('/request/review', revirewRequestRouter)
 
 
 /* 
 *  fetches all the user details
 */
 
-app.get('/feed', async (req, res) => {
+app.get('/feed', async (_req, res) => {
     try {
         const users = await User.find();
         if (!users) {
@@ -44,7 +50,7 @@ app.get('/feed', async (req, res) => {
 })
 
 
-app.use('/', (err, req, res, next) => {
+app.use('/', (err, _req, res, _next) => {
     console.log(`something went wrong in final call with error message:${err.message}`)
     res.send("Something went wrong " + err.message)
 })

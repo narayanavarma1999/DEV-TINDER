@@ -58,3 +58,5 @@ userRouter.delete('/user', async (req, res) => {
         res.status(422).send(`Failed to delete user`)
     }
 })
+
+module.exports = userRouter
