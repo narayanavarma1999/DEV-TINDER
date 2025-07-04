@@ -1,7 +1,6 @@
 # DEV-TINDER
 
-
-I'm building a dev tinder platform to connect with different developers to have 
+I'm building a dev tinder platform to connect with different developers to have
 conversations within developer communities to make friends and share their experiences work and about the latest technology trends , technologies
 
 This application consists of backend and frontend user interface to be hosted
@@ -37,7 +36,7 @@ Created Intital Create , Get , Update, Delete api's for user,
 <!-- Explored Schema Types options   -->
 
 added require, unique, min, minlength,trim and default for schema validations
-created a  custom validation function for gender
+created a custom validation function for gender
 Improved the schema validations
 Added timestamps
 
