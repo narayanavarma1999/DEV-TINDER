@@ -2,6 +2,7 @@ const express = require('express')
 const { validateSignUpData, validateLoginUser } = require('../utils/validation')
 const { encryptUserPassword } = require('../utils/password.encryption')
 const User = require('../models/user.model')
+const { userAuth } = require('../middlewares/user.auth')
 
 const authRouter = express.Router()
 
@@ -11,7 +12,7 @@ const authRouter = express.Router()
 *   where user sends is details
 */
 
-authRouter.post('/signup', async (req, res) => {
+authRouter.post('/signup', userAuth, async (req, res) => {
     try {
         /*
          * validation of data 
@@ -62,5 +63,14 @@ authRouter.post('/login', async (req, res) => {
     }
 })
 
+/* 
+ * logout the user from the platform
+ */
+
+authRouter.post('/logout', async (req, res) => {
+    res.clearCookie("token")
+    res.status(200).json({ message: 'Logged out successfully' })
+
+})
 
 module.exports = authRouter 

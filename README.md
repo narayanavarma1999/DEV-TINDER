@@ -13,7 +13,7 @@ The dev-tinder platform comprises of below listed functionalities
 
 Register
 Upload Profile Details
-Login 
+Login
 Update Profile
 Get Profile Details
 Create a new Profile resource
@@ -40,10 +40,9 @@ created a custom validation function for gender
 Improved the schema validations
 Added timestamps
 
-
 <!-- Validate Data -->
 
-Validate the incoming request data 
+Validate the incoming request data
 Encrypted user password by node package bcrypt
 Saved the user with bcrypt password
 
@@ -57,5 +56,12 @@ retrieving user information based upon the cookie from profile api
 <!--  User Authentication  -->
 
 add userAuth middleware to route handler for authentication
-set the expiry for JWT token and cookies to 7 days 
+set the expiry for JWT token and cookies to 7 days
 created user jwt token in schema methods
+
+<!-- Creating Profile APIs -->
+
+create POST a logout api
+create PATCH /profile/edit
+create PATCH /profile/forgotpassword api
+make sure all payload and data in POST and PATCH apis are validated and santizied 

@@ -2,7 +2,7 @@ const validator = require('validator');
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt')
 
-const validateSignUpData = async(req) => {
+const validateSignUpData = async (req) => {
 
     const { firstName, lastName, emailId, password } = req.body
 
@@ -37,6 +37,14 @@ const validateUser = async (emailId) => {
     return user
 }
 
+const validateForgotPassword = async (emailId, password) => {
+    const user = await validateUser(emailId)
+    if (!validator.isStrongPassword(password)) {
+        throw new Error('Please Ensure you provide a Strong Password')
+    }
+    return user
+}
+
 const validateLoginUser = async (emailId, password) => {
     const user = await validateUser(emailId)
     const isValidPassword = await bcrypt.compare(password, user.password)
@@ -46,4 +54,11 @@ const validateLoginUser = async (emailId, password) => {
     return { user, isValidPassword }
 }
 
-module.exports = { validateSignUpData, validateUser, validateLoginUser }
+const validateEditProfileData = async (req) => {
+    const allowedEditFields = ["firstName", "lastName", "emailId", "photoUrl", "gender", "age", "about", "skills"]
+    let isUpdatePayloadValid = Object.keys(req.body).every(key => allowedEditFields.includes(key))
+    return isUpdatePayloadValid
+}
+
+
+module.exports = { validateSignUpData, validateUser, validateLoginUser, validateEditProfileData, validateForgotPassword }
