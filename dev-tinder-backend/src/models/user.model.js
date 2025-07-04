@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const validator = require("validator")
 
 const userSchema = new mongoose.Schema({
 
@@ -25,11 +26,21 @@ const userSchema = new mongoose.Schema({
         unique: true,
         match: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
         index: true,
+        validate(value) {
+            if (!validator.isEmail(value)) {
+                throw new Error("Invalid email address " + value)
+            }
+        }
     },
 
     password: {
         type: String,
         required: true,
+        validate(value) {
+            if (!validator.isStrongPassword(value)) {
+                throw new Error(`Enter a Strong Password` + value)
+            }
+        }
     },
 
     age: {
@@ -50,7 +61,12 @@ const userSchema = new mongoose.Schema({
 
     photoUrl: {
         type: String,
-        default: "https://imgv3.fotor.com/images/blog-cover-image/10-profile-picture-ideas-to-make-you-stand-out.jpg"
+        default: "https://imgv3.fotor.com/images/blog-cover-image/10-profile-picture-ideas-to-make-you-stand-out.jpg",
+        validator(value) {
+            if (!validator.isURL(value)) {
+                throw new Error('Invalid Photo URL ' + value)
+            }
+        }
     },
 
     about: {
