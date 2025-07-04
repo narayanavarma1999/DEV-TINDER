@@ -3,6 +3,8 @@ const User = require('./models/user.model')
 const { validateSignUpData, validateLoginUser } = require('../src/utils/validation')
 const { encryptUserPassword } = require('../src/utils/password.encryption')
 const express = require('express');
+const cookieParser = require('cookie-parser')
+const jwt = require('jsonwebtoken')
 
 /* 
 *  creating an express instance for building application using express function
@@ -14,6 +16,8 @@ const dotenv = require('dotenv');
 dotenv.config()
 
 app.use(express.json())
+
+app.use(cookieParser())
 
 /* 
 *   creates an user in the database with 
@@ -37,6 +41,7 @@ app.post('/signup', async (req, res) => {
         const passwordHash = await encryptUserPassword(password)
 
         const userData = new User({ firstName, lastName, emailId, password: passwordHash });
+
         await User.create(userData)
         res.status(201).send(`User Created Successfully`)
     } catch (error) {
@@ -48,23 +53,62 @@ app.post('/signup', async (req, res) => {
 
 
 /* 
-*  logins the uses
+*  login's the uses
 */
 
 app.post('/login', async (req, res) => {
     try {
         const { emailId, password } = req.body
-        const user = await validateLoginUser(emailId);
-        const isValidPassword = await bcrypt.compare(password, user.password)
+        const { user, isValidPassword } = await validateLoginUser(emailId, password);
         if (!isValidPassword) {
             throw new Error('Invalid Credentials')
         }
+
+        /*
+         *  create a JWT token  
+         */
+
+        const secretKey = process.env.JWT_SECRET_KEY
+        const token = jwt.sign({ _id: user._id }, secretKey)
+        res.cookie("token", token)
+
         res.status(200).send('Login Successfully')
     } catch (error) {
         console.error(`Error while login user:${error.message}`)
         res.status(400).send(error.message)
     }
 })
+
+
+/*
+ *  profile  api which fetches all the user details
+ */
+
+app.get('/profile', async (req, res) => {
+    const { token } = req.cookies
+
+    /* 
+    * validate token
+    */
+
+    if (!token) {
+        throw new Error('Invalid Token')
+    }
+
+    const secretKey = process.env.JWT_SECRET_KEY
+
+    const { _id } = jwt.verify(token, secretKey)
+
+    const user = await User.findOne({ _id })
+
+    if (!user) {
+        res.status(400).send('User not found')
+    }
+
+    res.status(200).json(user)
+})
+
+
 
 /* 
 *  fetches all the user details with emailId

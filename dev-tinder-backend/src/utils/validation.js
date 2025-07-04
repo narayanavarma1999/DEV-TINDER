@@ -1,5 +1,6 @@
 const validator = require('validator');
 const User = require('../models/user.model');
+const bcrypt = require('bcrypt')
 
 const validateSignUpData = (req) => {
 
@@ -36,13 +37,13 @@ const validateUser = async (emailId) => {
     return user
 }
 
-const validateLoginUser = async (emailId) => {
+const validateLoginUser = async (emailId, password) => {
     const user = await validateUser(emailId)
     const isValidPassword = await bcrypt.compare(password, user.password)
     if (!isValidPassword) {
         throw new Error('Invalid Credentials')
     }
-    return user
+    return { user, isValidPassword }
 }
 
 module.exports = { validateSignUpData, validateUser, validateLoginUser }
