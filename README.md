@@ -54,3 +54,8 @@ install cookie-parser to allow passage of cookies
 creating jwt token after validating user password and credentials
 storing the user token in cookies
 retrieving user information based upon the cookie from profile api
+
+<!--  User Authentication  -->
+
+add userAuth middleware to route handler for authentication
+set the expiry for JWT token and cookies to 7 days 

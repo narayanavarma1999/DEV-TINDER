@@ -5,6 +5,7 @@ const { encryptUserPassword } = require('../src/utils/password.encryption')
 const express = require('express');
 const cookieParser = require('cookie-parser')
 const jwt = require('jsonwebtoken')
+const { userAuth } = require('./middlewares/user.auth')
 
 /* 
 *  creating an express instance for building application using express function
@@ -69,9 +70,8 @@ app.post('/login', async (req, res) => {
          */
 
         const secretKey = process.env.JWT_SECRET_KEY
-        const token = jwt.sign({ _id: user._id }, secretKey)
-        res.cookie("token", token)
-
+        const token = jwt.sign({ _id: user._id }, secretKey, { expiresIn: '1d' })
+        res.cookie("token", token, { expires: new Date(Date.now() + 8 * 360000) })
         res.status(200).send('Login Successfully')
     } catch (error) {
         console.error(`Error while login user:${error.message}`)
@@ -84,30 +84,25 @@ app.post('/login', async (req, res) => {
  *  profile  api which fetches all the user details
  */
 
-app.get('/profile', async (req, res) => {
-    const { token } = req.cookies
-
-    /* 
-    * validate token
-    */
-
-    if (!token) {
-        throw new Error('Invalid Token')
+app.get('/profile', userAuth, async (req, res) => {
+    try {
+        const user = req.user
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(400).send('Error:' + error.message)
     }
-
-    const secretKey = process.env.JWT_SECRET_KEY
-
-    const { _id } = jwt.verify(token, secretKey)
-
-    const user = await User.findOne({ _id })
-
-    if (!user) {
-        res.status(400).send('User not found')
-    }
-
-    res.status(200).json(user)
 })
 
+
+/* 
+* sends connection request to other users
+*/
+
+app.post('/connections/send', userAuth, (req, res) => {
+    const { firstName, lastName } = req.user
+    console.log(`Connection request`)
+    res.send(`${firstName + " " + lastName}  Sent Request`)
+})
 
 
 /* 
