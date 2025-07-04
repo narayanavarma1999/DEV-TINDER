@@ -29,4 +29,15 @@ allSendRequests
 allConnections
 
 
+<!--  ADDED MIDDLEWARE AND CREATED ROUTES  -->
 
+Created Middlewares to handle Authentication
+Cross Cutting concerns before access the route handler
+Created Intital Create , Get , Update, Delete api's for user,
+
+<!-- Explored Schema Types options   -->
+
+added require, unique, min, minlength,trim and default for schema validations
+created a  custom validation function for gender
+Improved the schema validations
+Added timestamps
