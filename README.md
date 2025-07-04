@@ -41,3 +41,10 @@ added require, unique, min, minlength,trim and default for schema validations
 created a  custom validation function for gender
 Improved the schema validations
 Added timestamps
+
+
+<!-- Validate Data -->
+
+Validate the incoming request data 
+Encrypted user password by node package bcrypt
+Saved the user with bcrypt password

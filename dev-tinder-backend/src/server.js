@@ -1,5 +1,7 @@
 const { mongooseConnection } = require('./config/database.connection')
 const User = require('./models/user.model')
+const { validateSignUpData, validateLoginUser } = require('../src/utils/validation')
+const { encryptUserPassword } = require('../src/utils/password.encryption')
 const express = require('express');
 
 /* 
@@ -7,7 +9,7 @@ const express = require('express');
 */
 const app = express()
 
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 
 dotenv.config()
 
@@ -21,16 +23,48 @@ app.use(express.json())
 
 app.post('/signup', async (req, res) => {
     try {
-        console.log(`in post call ${JSON.stringify(req.body)}`)
-        const userData = new User(req.body);
+        /*
+         * validation of data 
+         */
+
+        validateSignUpData(req);
+
+        const { firstName, lastName, emailId, password } = req.body
+
+        /*
+         * encrypt the password  
+         */
+        const passwordHash = await encryptUserPassword(password)
+
+        const userData = new User({ firstName, lastName, emailId, password: passwordHash });
         await User.create(userData)
         res.status(201).send(`User Created Successfully`)
     } catch (error) {
         console.log(`Error while creating  user:${error.message}`)
-        res.status(422).send(`Failed to create user`)
+        res.status(400).send(`Failed to create user with Error: ${error.message}`)
     }
 }
 )
+
+
+/* 
+*  logins the uses
+*/
+
+app.post('/login', async (req, res) => {
+    try {
+        const { emailId, password } = req.body
+        const user = await validateLoginUser(emailId);
+        const isValidPassword = await bcrypt.compare(password, user.password)
+        if (!isValidPassword) {
+            throw new Error('Invalid Credentials')
+        }
+        res.status(200).send('Login Successfully')
+    } catch (error) {
+        console.error(`Error while login user:${error.message}`)
+        res.status(400).send(error.message)
+    }
+})
 
 /* 
 *  fetches all the user details with emailId
