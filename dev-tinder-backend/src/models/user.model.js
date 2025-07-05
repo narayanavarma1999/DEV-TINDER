@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema({
 
     gender: {
         type: String,
+        enum: {
+            values: ['male', 'female', 'others'],
+            message: '{VALUE}  specified has incorrect gender type'
+        },
         validate(value) {
             if (!["male", "female", "others"].includes(value.toLowerCase())) {
                 throw new Error('Gender data is not valid')
@@ -84,6 +88,10 @@ const userSchema = new mongoose.Schema({
 
         strict: 'throw',
     })
+
+
+
+    
 
 
 userSchema.methods.getJWT = async function () {

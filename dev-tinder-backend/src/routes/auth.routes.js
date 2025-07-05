@@ -12,7 +12,7 @@ const authRouter = express.Router()
 *   where user sends is details
 */
 
-authRouter.post('/signup', userAuth, async (req, res) => {
+authRouter.post('/signup', async (req, res) => {
     try {
         /*
          * validation of data 
