@@ -1,5 +1,59 @@
-const express = require('express')
+const express = require('express');
+const User = require('../models/user.model');
+const { userAuth } = require('../middlewares/user.auth');
+const ConnectionRequest = require('../models/connection.request.model');
+const STATUS = require('../utils/connection.status.constants');
 const userRouter = express.Router()
+
+
+/* 
+*  Gets all the pending connection requests for the loggedIn user 
+*/
+
+userRouter.get('/requests/received', userAuth, async (req, res) => {
+    try {
+        const loggedInUser = req.user
+        const data = await ConnectionRequest.find({
+            toUserId: loggedInUser._id,
+            status: STATUS.INTERESTED
+        }).populate('fromUserId', ["firstName", "lastName", "photoUrl"])
+
+        res.status(200).json({ message: `All ${loggedInUser.firstName} Connections are retrieved`, data })
+    } catch (error) {
+        res.status(400).send(`ERROR: ` + error.message)
+    }
+})
+
+
+/* 
+*  Retrieves all the connections associated to the user
+*/
+
+userRouter.get('/connections', userAuth, async (req, res) => {
+    const userId = req.user._id
+    try {
+        const connections = await ConnectionRequest.find({
+            $or: [{
+                toUserId: userId, status: STATUS.ACCEPTED
+            }, {
+                fromUserId: userId, status: STATUS.ACCEPTED
+            }]
+        },
+        )
+            .populate('fromUserId', ["firstName", "lastName", "photoUrl"])
+            .populate('toUserId', ["firstName", "lastName", "photoUrl"])
+
+        const data = connections.map(connection => {
+            if ((connection.fromUserId.toString() === userId.toString()) || (connection.toUserId.toString() === userId.toString())) {
+                return connection
+            }
+        })
+        res.status(200).json({ data })
+
+    } catch (error) {
+        res.status(500).send('Error:' + error.message)
+    }
+})
 
 
 /* 

@@ -2,7 +2,7 @@ const express = require('express')
 const { userAuth } = require('../middlewares/user.auth')
 const ConnectionRequest = require('../models/connection.request.model')
 const User = require('../models/user.model')
-const { STATUS } = require('../utils/connection.status.constants')
+const STATUS  = require('../utils/connection.status.constants')
 const sendRequestRouter = express.Router()
 
 /* 

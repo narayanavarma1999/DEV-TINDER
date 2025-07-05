@@ -2,7 +2,6 @@ const express = require('express')
 const { validateSignUpData, validateLoginUser } = require('../utils/validation')
 const { encryptUserPassword } = require('../utils/password.encryption')
 const User = require('../models/user.model')
-const { userAuth } = require('../middlewares/user.auth')
 
 const authRouter = express.Router()
 

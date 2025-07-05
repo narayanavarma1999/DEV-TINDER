@@ -4,9 +4,11 @@ const connectionRequestSchema = new mongoose.Schema({
 
     fromUserId: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true
+        required: true,
+        ref: "User"
     },
 
+    /* ref indicates the field is refering to User collection (similar to joins relations) */
 
     toUserId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -29,6 +31,7 @@ const connectionRequestSchema = new mongoose.Schema({
     strict: 'throw',
 })
 
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 })
 
 connectionRequestSchema.pre('save', function (next) {
     const connectionRequest = this
