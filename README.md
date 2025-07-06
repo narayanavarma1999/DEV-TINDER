@@ -72,3 +72,9 @@ The dev-tinder platform comprises of below listed functionalities
 - Why do we need index (or) indexing
 - What are the advantages and disadvantages of indexes
 - schema pre functions
+
+<!-- Implemented Connections Feed Api -->
+- find all connections associated with loggedIn user
+- Eliminate current loggedIn userId and all associated connections request userIds
+- and retrive all other userIds expect above mentioned userIds
+- Add pagination to limit the extraction of results

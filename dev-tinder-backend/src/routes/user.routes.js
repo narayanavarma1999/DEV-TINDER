@@ -5,6 +5,57 @@ const ConnectionRequest = require('../models/connection.request.model');
 const STATUS = require('../utils/connection.status.constants');
 const userRouter = express.Router()
 
+/* 
+* feed api
+*/
+
+
+userRouter.get('/feed', userAuth, async (req, res) => {
+    try {
+        // user can see all cards except 
+        /*  
+            his own card,
+            his connections,
+            and people who he has accepted and rejected
+            aleady send request connections
+        */
+
+        const hideConnectionsId = new Set()
+        const loggedInUserId = req.user._id
+
+        /* 
+        *  adding pagination if received from request
+        *  or use default values
+        */
+        let limit = parseInt(req.query.limit) || 10
+        limit = (limit > 50) ? 50 : limit
+        const page = parseInt(req.query.page) || 1
+        const skip = (page - 1) * 10
+
+        /* 
+         Initially hiding own loginUserId from the feed  
+        */
+        hideConnectionsId.add(loggedInUserId)
+
+        const connections = await ConnectionRequest.find({
+            $or: [
+                { toUserId: loggedInUserId }, { fromUserId: loggedInUserId }
+            ]
+        }).select(CONNECTION_USER_FIELDS)
+
+        connections.forEach(connection => {
+            hideConnectionsId.add(connection.toUserId)
+            hideConnectionsId.add(connection.fromUserId)
+        })
+
+        const data = await User.find({ _id: { $nin: Array.from(hideConnectionsId) } }).select(USER_SAFE_DATA).skip(skip).limit(limit)
+        res.status(200).json({ data })
+
+    } catch (error) {
+        res.status(400).send('ERROR:' + error.message)
+    }
+})
+
 
 /* 
 *  Gets all the pending connection requests for the loggedIn user 
@@ -26,7 +77,7 @@ userRouter.get('/requests/received', userAuth, async (req, res) => {
 
 
 /* 
-*  Retrieves all the connections associated to the user
+*  Retrieves all the accepted connections associated to the user
 */
 
 userRouter.get('/connections', userAuth, async (req, res) => {

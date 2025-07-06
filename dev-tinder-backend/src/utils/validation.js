@@ -60,5 +60,4 @@ const validateEditProfileData = async (req) => {
     return isUpdatePayloadValid
 }
 
-
 module.exports = { validateSignUpData, validateUser, validateLoginUser, validateEditProfileData, validateForgotPassword }

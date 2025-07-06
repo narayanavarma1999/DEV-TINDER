@@ -6,4 +6,5 @@ const STATUS = {
     REJECTED: 'rejected'
 };
 
+
 module.exports = STATUS
