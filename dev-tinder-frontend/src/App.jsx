@@ -1,20 +1,21 @@
-import Body from "./Body";
-import { Login } from "./Login";
-import NavBar from "./NavBar";
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Profile from "./Profile";
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import IntroPage from './components/IntroPage';
+import Home from './pages/Home';
+import LoginForm from './pages/LoginForm';
+import RegisterForm from './pages/RegisterForm';
 
 export default function App() {
   return (
-    <>
-      <BrowserRouter basename="/">
-        <Routes>
-          <Route path="/" element={<Body />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/profile" element={<Profile />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<IntroPage />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/register" element={<RegisterForm />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
+
+
+

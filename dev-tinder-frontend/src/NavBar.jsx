@@ -1,36 +1,23 @@
-import React from 'react'
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
     return (
-        <div className="navbar bg-base-300 shadow-bg">
-            <div className="flex-1">
-                <a className="btn btn-ghost text-white-xl">👨‍🦱 DEV TINDER</a>
-            </div>
-            <div className="flex gap-2">
-                <div className="dropdown dropdown-end mx-5">
-                    <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                        <div className="w-10 rounded-full">
-                            <img
-                                alt="Tailwind CSS Navbar component"
-                                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+        <nav className="bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 text-white shadow-md sticky top-0 z-50">
+            <div className="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+                <Link to="/" className="text-2xl font-bold hover:text-yellow-300 transition-all">DevTinder</Link>
+                <div className="flex items-center gap-4">
+                    <Link to="/login" className="hover:underline">Login</Link>
+                    <Link to="/register" className="hover:underline">Register</Link>
+                    <div className="avatar">
+                        <div className="w-8 rounded-full ring ring-white ring-offset-2">
+                            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=dev" alt="avatar" />
                         </div>
                     </div>
-                    <ul
-                        tabIndex={0}
-                        className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
-                        <li>
-                            <a className="justify-between">
-                                Profile
-                                <span className="badge">New</span>
-                            </a>
-                        </li>
-                        <li><a>Settings</a></li>
-                        <li><a>Logout</a></li>
-                    </ul>
                 </div>
             </div>
-        </div>
-    )
-}
+        </nav>
+    );
+};
 
-export default NavBar
+export default NavBar;

@@ -2,3 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 @plugin "daisyui";
+
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Animation classes */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

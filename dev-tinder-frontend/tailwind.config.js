@@ -3,11 +3,18 @@ export default {
  content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
-    
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#5f27cd",
+        "primary-light": "#7d5fff",
+        dark: "#1e272e",
+        light: "#f5f6fa",
+      },
+    },
   },
-  plugins: [require("daisyui")],
+  plugins: [require("daisyui"),require('@tailwindcss/forms')],
 }
+
 

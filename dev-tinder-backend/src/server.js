@@ -7,6 +7,7 @@ const profileRouter = require('./routes/profile.route')
 const revirewRequestRouter = require('./routes/review.requests.route')
 const sendRequestRouter = require('./routes/send.requests.route')
 const userRouter = require('./routes/user.routes')
+const cors = require('cors')
 
 /* 
 *  creating an express instance for building application using express function
@@ -16,6 +17,8 @@ const app = express()
 const dotenv = require('dotenv');
 
 dotenv.config()
+
+app.use(cors())
 
 app.use(express.json())
 
