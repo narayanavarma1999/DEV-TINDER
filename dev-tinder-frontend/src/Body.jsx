@@ -1,18 +1,41 @@
-import React from 'react';
-import NavBar from './NavBar';
-import { Outlet } from 'react-router-dom';
-import Footer from './Footer';
+import { Provider } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Feed from './components/Feed';
+import IntroPage from './components/IntroPage';
+import Home from './pages/Home';
+import LoginForm from './pages/LoginForm';
+import RegisterForm from './pages/RegisterForm';
+import store from './utils/appstore/store';
+import ShimmerLoading from './utils/spinner/ShimmerLoadings';
+import GlobalShimmerLoader from './utils/spinner/ShimmerLoadings'
 
-const Home = () => {
-    return (
-        <div className="flex flex-col min-h-screen">
-            <NavBar />
-            <main className="flex-grow">
-                <Outlet />
-            </main>
-            <Footer />
-        </div>
-    );
+
+const App = () => {
+  return (
+    <LoadingProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </LoadingProvider>
+  );
 };
 
-export default Home;
+const AppContent = () => {
+  const { isLoading, loadingText } = useLoading();
+
+  return (
+    <>
+      <GlobalShimmerLoader isLoading={isLoading} loadingText={loadingText} />
+      
+      <div className={isLoading ? 'opacity-30 pointer-events-none' : ''}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/feed" element={<FeedPage />} />
+        </Routes>
+      </div>
+    </>
+  );
+};
+
+export default App;

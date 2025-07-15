@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { loginUser, registerUser } from "../utils/login";
-import SuccessPopup from "../utils/popups/SuccesPopUp";
-import EmailExistsPopup from "../utils/popups/EmailExistsPopUp";
-import ErrorPopup from "../utils/popups/ErrorPopUp";
+import { loginUser, registerUser } from "../../utils/constants/login";
+import SuccessPopup from "../../utils/popups/SuccesPopUp";
+import EmailExistsPopup from "../../utils/popups/EmailExistsPopUp";
+import ErrorPopup from "../../utils/popups/ErrorPopUp";
 import { useDispatch } from 'react-redux';
-import { addUser } from '../utils/appstore/userslice'
+import { addUser } from '../../utils/appstore/userslice'
+import { useNavigate } from "react-router-dom";
 
 
 const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
@@ -18,10 +19,12 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
   const [authError, setAuthError] = useState(null);
   const [showEmailExists, setShowEmailExists] = useState(false);
   const dispatch = useDispatch()
+  const navigate = useNavigate();
 
   const handleLoginSuccess = () => {
     setSuccessMessage('You have successfully logged in!');
     setShowSuccess(true);
+    navigate('/feed');
   };
 
   const handleRegisterSuccess = () => {

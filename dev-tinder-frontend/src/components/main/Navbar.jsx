@@ -7,6 +7,7 @@ import {
   UserIcon,
   BellIcon,
 } from "@heroicons/react/24/outline";
+import { LogOut } from 'lucide-react';
 import { useSelector } from "react-redux";
 
 const Navbar = ({ openAuthModal }) => {
@@ -60,6 +61,9 @@ const Navbar = ({ openAuthModal }) => {
               </div>
             ) : (
               <div className="flex items-center gap-3 ml-2">
+
+                <p>Welcome, {user.firstName}</p>
+
                 {/* Notification Bell */}
                 <button className="relative p-1 text-gray-700 hover:text-primary transition">
                   <BellIcon className="h-5 w-5" />
@@ -75,7 +79,7 @@ const Navbar = ({ openAuthModal }) => {
                     <div className="avatar">
                       <div className="w-10 rounded-full ring-2 ring-primary ring-offset-2 ring-offset-white">
                         <img
-                          src={user.photoURL || "https://img.daisyui.com/images/profile/demo/spiderperson@192.webp"}
+                          src={user.photoUrl}
                           alt="Profile"
                         />
                       </div>
@@ -106,8 +110,9 @@ const Navbar = ({ openAuthModal }) => {
                           // Add logout logic here
                           setProfileDropdownOpen(false);
                         }}
-                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="block w-full text-left px-5 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                       >
+                        <LogOut className="w-4 h-4" />
                         Logout
                       </button>
                     </div>
@@ -206,6 +211,7 @@ const Navbar = ({ openAuthModal }) => {
                     <Cog6ToothIcon className="h-4 w-4" />
                     Settings
                   </Link>
+                  <ArrowRightOnRectangleIcon className="w-5 h-5" />
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);

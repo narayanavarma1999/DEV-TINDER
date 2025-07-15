@@ -1,1 +1,5 @@
 export const EMAIL_EXISTS = 'EmailId Already Exists'
+export const VITE_REACT_APP_HOST = 'http://localhost:3000'
+export const VITE_REACT_APP_LOGIN = '/auth/login'
+export const VITE_REACT_APP_REGISTER = '/auth/signup'
+export const VITE_REACT_APP_PROFILE = '/profile/view'

@@ -12,9 +12,17 @@ export default {
         dark: "#1e272e",
         light: "#f5f6fa",
       },
+      animation: {
+        shimmer: "shimmer 2s infinite",
+      },
+      keyframes: {
+        shimmer: {
+          "100%": { transform: "translateX(100%)" },
+        },
+      },
     },
   },
-  plugins: [require("daisyui"),require('@tailwindcss/forms')],
+  plugins: [require("daisyui"), require('@tailwindcss/forms')],
 }
 
 
