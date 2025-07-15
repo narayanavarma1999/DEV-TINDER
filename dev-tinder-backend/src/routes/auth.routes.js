@@ -19,19 +19,23 @@ authRouter.post('/signup', async (req, res) => {
 
         await validateSignUpData(req);
 
-        const { firstName, lastName, emailId, password } = req.body
+        const { fullName, firstName, lastName, emailId, password } = req.body
 
         /*
          * encrypt the password  
          */
         const passwordHash = await encryptUserPassword(password)
 
-        const userData = new User({ firstName, lastName, emailId, password: passwordHash });
+        const userData = new User({ fullName, firstName, lastName, emailId, password: passwordHash });
 
-        await User.create(userData)
-        res.status(201).send(`User Created Successfully`)
+        const user = await User.save(userData)
+
+        res.status(201).send(user)
     } catch (error) {
         console.log(`Error while creating  user:${error.message}`)
+        if (error.message.includes(EMAIL_EXISTS)) {
+            return res.send(`${error.message}`)
+        }
         res.status(400).send(`Failed to create user with Error: ${error.message}`)
     }
 }
@@ -55,7 +59,7 @@ authRouter.post('/login', async (req, res) => {
         const token = await user.getJWT()
 
         res.cookie("token", token, { expires: new Date(Date.now() + 8 * 360000) })
-        res.status(200).send('Login Successfully')
+        res.status(200).send(user)
     } catch (error) {
         console.error(`Error while login user:${error.message}`)
         res.status(400).send(error.message)

@@ -4,14 +4,14 @@ const bcrypt = require('bcrypt')
 
 const validateSignUpData = async (req) => {
 
-    const { firstName, lastName, emailId, password } = req.body
+    const { fullName ,firstName, lastName, emailId, password } = req.body
 
-    if (!firstName || firstName.trim().length < 4) {
-        throw new Error('First name is required and must be at least 4 characters long');
+    if (!fullName || fullName.trim().length < 4) {
+        throw new Error('Full name is required and must be at least 4 characters long');
     }
 
-    if (!lastName || lastName.trim().length < 4) {
-        throw new Error('Last name is required and must be at least 4 characters long');
+    if (!firstName || firstName.trim().length < 4) {
+        throw new Error('first name is required and must be at least 4 characters long');
     }
 
     if (!validator.isEmail(emailId)) {

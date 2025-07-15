@@ -78,3 +78,6 @@ The dev-tinder platform comprises of below listed functionalities
 - Eliminate current loggedIn userId and all associated connections request userIds
 - and retrive all other userIds expect above mentioned userIds
 - Add pagination to limit the extraction of results
+
+
+<!-- Implemetation changes for frontend view  -->

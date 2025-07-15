@@ -16,7 +16,7 @@ const Hero = ({ openAuthModal }) => {
             <span className="text-primary">Let's Code, Connect, Collaborate</span>
           </motion.h1>
 
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
@@ -25,7 +25,7 @@ const Hero = ({ openAuthModal }) => {
             <h1 className="text-5xl font-extrabold mb-6 animate-fade-in-down">
               🦄 DevTinder: <span className="text-yellow-300">Where Coders Connect 💬</span>
             </h1>
-          </motion.p>
+          </motion.div>
           
           <DevCommunityHero />
 

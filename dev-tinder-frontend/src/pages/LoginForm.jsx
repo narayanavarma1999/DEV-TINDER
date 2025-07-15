@@ -27,7 +27,7 @@ const LoginForm = ({ onToggle, onSubmit, formData, onChange }) => {
             type="email"
             autoComplete="email"
             required
-            value={formData.email}
+            value={formData?.email}
             onChange={onChange}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />
@@ -43,7 +43,7 @@ const LoginForm = ({ onToggle, onSubmit, formData, onChange }) => {
             type="password"
             autoComplete="current-password"
             required
-            value={formData.password}
+            value={formData?.password}
             onChange={onChange}
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
           />

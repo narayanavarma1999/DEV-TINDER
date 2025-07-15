@@ -16,7 +16,6 @@ const Navbar = ({ openAuthModal }) => {
             </Link>
           </div>
 
-          {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/features" className="text-gray-700 hover:text-primary">
               Features

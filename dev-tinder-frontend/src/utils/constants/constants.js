@@ -1,0 +1,1 @@
+export const EMAIL_EXISTS = 'EmailId Already Exists'

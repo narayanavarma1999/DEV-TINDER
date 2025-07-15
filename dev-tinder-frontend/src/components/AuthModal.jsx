@@ -1,15 +1,78 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from 'react-router-dom';
+import { loginUser, registerUser } from "../utils/login";
+import SuccessPopup from "../utils/popups/SuccesPopUp";
+import EmailExistsPopup from "../utils/popups/EmailExistsPopUp";
+import ErrorPopup from "../utils/popups/ErrorPopUp";
 
-const AuthModal = ({ mode, onClose, switchMode }) => {
+
+const AuthModal = ({ mode, onClose, openAuthModal }) => {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [authError, setAuthError] = useState(null);
+  const [showEmailExists, setShowEmailExists] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleLoginSuccess = () => {
+    setSuccessMessage('You have successfully logged in!');
+    setShowSuccess(true);
+  };
+
+  const handleRegisterSuccess = () => {
+    setSuccessMessage('Your account has been created successfully!');
+    setShowSuccess(true);
+  };
+
+  const handleLoginError = (message) => {
+    setAuthError(message);
+  };
+
+  const handleRegisterError = (message) => {
+    setAuthError(message);
+  };
+
+  const handleAuthError = (message) => {
+    setAuthError(message);
+  };
+
+  const clearAuthError = () => {
+    setAuthError(null);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle authentication logic here
-    console.log({ email, password, name });
+
+    try {
+      if (mode === "login") {
+        const response = await loginUser(email, password);
+        console.log(`in login method :${JSON.stringify(response)}`)
+        if (response.success) {
+          handleLoginSuccess();
+        } else {
+          handleLoginError(response.message);
+        }
+      }
+
+      if (mode === "register") {
+        const response = await registerUser(name, email, password);
+        if (response.success) {
+          handleRegisterSuccess();
+        } else {
+          if (response.message.includes('EmailId Already Exists')) {
+            setShowEmailExists(true);
+          } else {
+            handleRegisterError(response.message);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Authentication error:", error);
+      handleAuthError("An unexpected error occurred. Please try again.");
+    }
   };
 
   return (
@@ -22,18 +85,18 @@ const AuthModal = ({ mode, onClose, switchMode }) => {
           >
             <XMarkIcon className="h-6 w-6" />
           </button>
-          
+
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">
               {mode === 'login' ? 'Welcome back' : 'Get started'}
             </h2>
             <p className="text-gray-600 mt-2">
-              {mode === 'login' 
-                ? 'Log in to your account' 
+              {mode === 'login'
+                ? 'Log in to your account'
                 : 'Create a new account to get started'}
             </p>
           </div>
-          
+
           <form onSubmit={handleSubmit}>
             {mode === 'register' && (
               <div className="mb-4">
@@ -50,7 +113,7 @@ const AuthModal = ({ mode, onClose, switchMode }) => {
                 />
               </div>
             )}
-            
+
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email
@@ -64,7 +127,7 @@ const AuthModal = ({ mode, onClose, switchMode }) => {
                 required
               />
             </div>
-            
+
             <div className="mb-6">
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
@@ -79,7 +142,7 @@ const AuthModal = ({ mode, onClose, switchMode }) => {
                 minLength={6}
               />
             </div>
-            
+
             <button
               type="submit"
               className="w-full py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary-light transition"
@@ -87,11 +150,27 @@ const AuthModal = ({ mode, onClose, switchMode }) => {
               {mode === 'login' ? 'Log in' : 'Sign up'}
             </button>
           </form>
-          
+
+          {showSuccess && (
+            <SuccessPopup
+              message={successMessage}
+              onClose={() => setShowSuccess(false)}
+            />
+          )}
+
+          {showEmailExists && (
+            <EmailExistsPopup
+              onClose={() => setShowEmailExists(false)}
+              openAuthModal={openAuthModal}
+            />
+          )}
+
+          {authError && <ErrorPopup message={authError} onClose={clearAuthError} />}
+
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              {mode === 'login' 
-                ? "Don't have an account? " 
+              {mode === 'login'
+                ? "Don't have an account? "
                 : "Already have an account? "}
               <button
                 onClick={() => switchMode(mode === 'login' ? 'register' : 'login')}
@@ -100,7 +179,7 @@ const AuthModal = ({ mode, onClose, switchMode }) => {
                 {mode === 'login' ? 'Sign up' : 'Log in'}
               </button>
             </p>
-            
+
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-300"></div>
@@ -109,7 +188,7 @@ const AuthModal = ({ mode, onClose, switchMode }) => {
                 <span className="px-2 bg-white text-gray-500">Or continue with</span>
               </div>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-3">
               <button className="flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="#4285F4">

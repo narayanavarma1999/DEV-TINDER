@@ -35,7 +35,7 @@ const Home = () => {
         <AuthModal 
           mode={authMode} 
           onClose={closeAuthModal} 
-          switchMode={switchAuthMode} 
+          openAuthModal={openAuthModal} 
         />
       )}
     </div>

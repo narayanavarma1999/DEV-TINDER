@@ -4,6 +4,15 @@ const jwt = require('jsonwebtoken')
 
 const userSchema = new mongoose.Schema({
 
+    fullName: {
+        type: String,
+        required: true,
+        trim: true,
+        minLength: 4,
+        maxLength: 50
+    },
+
+
     firstName: {
         type: String,
         required: true,
@@ -14,7 +23,6 @@ const userSchema = new mongoose.Schema({
 
     lastName: {
         type: String,
-        required: true,
         trim: true,
         minLength: 4,
         maxLength: 50
@@ -91,7 +99,7 @@ const userSchema = new mongoose.Schema({
 
 
 
-    
+
 
 
 userSchema.methods.getJWT = async function () {

@@ -18,7 +18,7 @@ const dotenv = require('dotenv');
 
 dotenv.config()
 
-app.use(cors())
+app.use(cors({ origin: process.env.DEV_TINDER_WEB, credentials: true }))
 
 app.use(express.json())
 
