@@ -35,7 +35,6 @@ export const registerUser = async (name, emailId, password) => {
         const { fullName, firstName, lastName } = parseFullName(name)
         const response = await axios.post(`${registerUrl}`, { fullName, firstName, lastName, emailId, password });
         const data = await response.data
-        console.log(`registerUser:${JSON.stringify(data)}`)
         if (response.data === EMAIL_EXISTS) {
             return { success: false, message: data || 'Registration failed' };
         }

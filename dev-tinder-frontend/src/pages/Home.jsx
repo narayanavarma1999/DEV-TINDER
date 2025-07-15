@@ -17,7 +17,7 @@ const Home = () => {
   const closeAuthModal = () => {
     setAuthModalOpen(false);
   };
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
   const switchAuthMode = (mode) => {
     setAuthMode(mode);
   };
@@ -36,6 +36,7 @@ const Home = () => {
           mode={authMode} 
           onClose={closeAuthModal} 
           openAuthModal={openAuthModal} 
+          switchMode={switchAuthMode}
         />
       )}
     </div>

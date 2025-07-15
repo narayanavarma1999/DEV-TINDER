@@ -2,6 +2,7 @@ const express = require('express')
 const { validateSignUpData, validateLoginUser } = require('../utils/validation')
 const { encryptUserPassword } = require('../utils/password.encryption')
 const User = require('../models/user.model')
+const { EMAIL_EXISTS } = require('../utils/constants')
 
 const authRouter = express.Router()
 
@@ -28,7 +29,7 @@ authRouter.post('/signup', async (req, res) => {
 
         const userData = new User({ fullName, firstName, lastName, emailId, password: passwordHash });
 
-        const user = await User.save(userData)
+        const user = await userData.save(userData)
 
         res.status(201).send(user)
     } catch (error) {

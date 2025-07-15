@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from 'react-router-dom';
 import { loginUser, registerUser } from "../utils/login";
 import SuccessPopup from "../utils/popups/SuccesPopUp";
 import EmailExistsPopup from "../utils/popups/EmailExistsPopUp";
 import ErrorPopup from "../utils/popups/ErrorPopUp";
+import { useDispatch } from 'react-redux';
+import { addUser } from '../utils/appstore/userslice'
 
 
-const AuthModal = ({ mode, onClose, openAuthModal }) => {
+const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,6 +17,7 @@ const AuthModal = ({ mode, onClose, openAuthModal }) => {
   const [successMessage, setSuccessMessage] = useState('');
   const [authError, setAuthError] = useState(null);
   const [showEmailExists, setShowEmailExists] = useState(false);
+  const dispatch = useDispatch()
 
   const handleLoginSuccess = () => {
     setSuccessMessage('You have successfully logged in!');
@@ -49,7 +51,7 @@ const AuthModal = ({ mode, onClose, openAuthModal }) => {
     try {
       if (mode === "login") {
         const response = await loginUser(email, password);
-        console.log(`in login method :${JSON.stringify(response)}`)
+        dispatch(addUser(response.data))
         if (response.success) {
           handleLoginSuccess();
         } else {
