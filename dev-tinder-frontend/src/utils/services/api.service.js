@@ -1,9 +1,10 @@
 import axios from 'axios'
-import { EMAIL_EXISTS } from '../constants/constants';
+import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE } from '../constants/constants'
 
-const loginUrl = import.meta.env.VITE_REACT_APP_HOST + import.meta.env.VITE_REACT_APP_LOGIN;
-const registerUrl = import.meta.env.VITE_REACT_APP_HOST + import.meta.env.VITE_REACT_APP_REGISTER;
-const profileUrl = import.meta.env.VITE_REACT_APP_HOST + import.meta.env.VITE_REACT_APP_PROFILE;
+
+const loginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_LOGIN;
+const registerUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_REGISTER;
+const profileLoginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_PROFILE;
 
 function parseFullName(name) {
 
@@ -45,14 +46,20 @@ export const registerUser = async (name, emailId, password) => {
     }
 }
 
+
 export const fetchUser = async () => {
     try {
-        const response = await axios.get(profileUrl, { withCredentials: true });
-        const user = response.data;
-        return user
+        const user = await axios.get(profileLoginUrl, { withCredentials: true })
+        return user.data
     } catch (error) {
-        console.error(`Error: ${error.message}`)
-        return null;
-    }   
+        return null
+    }
 }
 
+
+export const capitalizeFirstName = (str) => {
+    if (typeof str !== 'string' || str.length === 0) {
+        return str;
+    }
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}

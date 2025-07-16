@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
 import DevCommunityHero from "./DevCommunityHero";
+import { useSelector } from "react-redux";
 
 const Hero = ({ openAuthModal }) => {
+
+  const user = useSelector((store) => store.user);
+
   return (
     <section className="relative pt-32 pb-20 md:pt-40 md:pb-32 bg-gradient-to-br from-primary/5 via-white to-primary-light/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -35,12 +39,12 @@ const Hero = ({ openAuthModal }) => {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="flex flex-col sm:flex-row justify-center gap-4"
           >
-            <button
+            {!user && <button
               onClick={() => openAuthModal('register')}
               className="px-8 py-4 bg-primary text-white text-lg font-medium rounded-lg hover:bg-primary-light transition shadow-lg hover:shadow-xl"
             >
               Find Your Coding Partner 👨‍💻
-            </button>
+            </button>}
 
           </motion.div>
         </div>

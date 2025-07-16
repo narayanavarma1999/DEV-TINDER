@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import FeedNavigationButton from './FeedNavigation';
+import { useSelector } from "react-redux";
+
 
 const FEATURE_CARDS = [
   {
@@ -26,7 +29,8 @@ const LANGUAGES = ['JavaScript', 'Python', 'TypeScript', 'Go', 'Rust', 'Java'];
 export default function DevCommunityHero() {
   const [loaded, setLoaded] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState(0);
-
+  const user = useSelector((store) => store.user);
+  
   useEffect(() => {
     setLoaded(true);
     
@@ -42,43 +46,44 @@ export default function DevCommunityHero() {
       <div className={`max-w-6xl mx-auto transition-all duration-1000 ease-out ${loaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="text-center space-y-16">
           {/* Hero Title Section */}
-          <div className="space-y-8">
-            <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-secondary animate-gradient-x">
-              Find Your <span className="underline decoration-wavy decoration-secondary/50">Coding Partner</span>
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-neutral-content/90 max-w-2xl mx-auto relative">
-              From <span className="font-mono bg-neutral/20 px-3 py-1 rounded-lg border border-neutral/30 shadow-inner hover:bg-neutral/30 transition-colors duration-300">git commit</span> messages to <span className="relative inline-block group">
-                <span className="relative z-10">real connections</span>
-                <span className="absolute bottom-0 left-0 w-full h-2 bg-secondary/30 -rotate-1 -skew-x-6 z-0 group-hover:bg-secondary/50 group-hover:h-3 transition-all duration-300"></span>
-              </span>
-            </p>
-          </div>
+          {!user ? <>
+            <div className="space-y-8">
+              <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-accent to-secondary animate-gradient-x">
+                Find Your <span className="underline decoration-wavy decoration-secondary/50">Coding Partner</span>
+              </h1>
 
-          {/* Stats Section */}
-          <div className="flex justify-center px-4">
-            <div className="stats shadow-lg bg-base-200/50 backdrop-blur-sm border border-base-300/50 w-full max-w-2xl">
-              <div className="stat place-items-center">
-                <div className="stat-title text-neutral-content/80">Language</div>
-                <div className="stat-value text-primary">
-                  <span className="animate-pulse">{LANGUAGES[currentLanguage]}</span>
-                </div>
-                <div className="stat-desc text-neutral-content/60">you speak</div>
-              </div>
-
-              <div className="stat place-items-center">
-                <div className="stat-title text-neutral-content/80">Developers</div>
-                <div className="stat-value text-secondary">10K+</div>
-                <div className="stat-desc text-neutral-content/60">already connected</div>
-              </div>
-              
-              <div className="stat place-items-center">
-                <div className="stat-title text-neutral-content/80">Projects</div>
-                <div className="stat-value text-accent">5K+</div>
-                <div className="stat-desc text-neutral-content/60">collaborated on</div>
-              </div>
+              <p className="text-xl md:text-2xl text-neutral-content/90 max-w-2xl mx-auto relative">
+                From <span className="font-mono bg-neutral/20 px-3 py-1 rounded-lg border border-neutral/30 shadow-inner hover:bg-neutral/30 transition-colors duration-300">git commit</span> messages to <span className="relative inline-block group">
+                  <span className="relative z-10">real connections</span>
+                  <span className="absolute bottom-0 left-0 w-full h-2 bg-secondary/30 -rotate-1 -skew-x-6 z-0 group-hover:bg-secondary/50 group-hover:h-3 transition-all duration-300"></span>
+                </span>
+              </p>
             </div>
-          </div>
+
+            {/* Stats Section */}
+            <div className="flex justify-center px-4">
+              <div className="stats shadow-lg bg-base-200/50 backdrop-blur-sm border border-base-300/50 w-full max-w-2xl">
+                <div className="stat place-items-center">
+                  <div className="stat-title text-neutral-content/80">Language</div>
+                  <div className="stat-value text-primary">
+                    <span className="animate-pulse">{LANGUAGES[currentLanguage]}</span>
+                  </div>
+                  <div className="stat-desc text-neutral-content/60">you speak</div>
+                </div>
+
+                <div className="stat place-items-center">
+                  <div className="stat-title text-neutral-content/80">Developers</div>
+                  <div className="stat-value text-secondary">10K+</div>
+                  <div className="stat-desc text-neutral-content/60">already connected</div>
+                </div>
+
+                <div className="stat place-items-center">
+                  <div className="stat-title text-neutral-content/80">Projects</div>
+                  <div className="stat-value text-accent">5K+</div>
+                  <div className="stat-desc text-neutral-content/60">collaborated on</div>
+                </div>
+              </div>
+            </div></> : <FeedNavigationButton />}
 
           {/* Feature Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
@@ -101,11 +106,11 @@ export default function DevCommunityHero() {
           </div>
         </div>
       </div>
-      
+
       {/* Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
         {[...Array(10)].map((_, i) => (
-          <div 
+          <div
             key={i}
             className="absolute rounded-full bg-primary/10 animate-float"
             style={{

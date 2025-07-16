@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { loginUser, registerUser } from "../../utils/constants/login";
+import { loginUser, registerUser } from "../../utils/services/api.service";
 import SuccessPopup from "../../utils/popups/SuccesPopUp";
 import EmailExistsPopup from "../../utils/popups/EmailExistsPopUp";
 import ErrorPopup from "../../utils/popups/ErrorPopUp";
 import { useDispatch } from 'react-redux';
 import { addUser } from '../../utils/appstore/userslice'
 import { useNavigate } from "react-router-dom";
+import ShimmerLoading from "../../utils/spinner/ShimmerLoadings";
+import { loginSuccess } from "../../utils/appstore/authslice";
 
 
 const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
@@ -31,6 +33,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
   const handleRegisterSuccess = () => {
     setSuccessMessage('Your account has been created successfully!');
     setShowSuccess(true);
+    navigate('/feed');
   };
 
   const handleLoginError = (message) => {
@@ -57,6 +60,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
       if (mode === "login") {
         const response = await loginUser(email, password);
         dispatch(addUser(response.data))
+        dispatch(loginSuccess(response.data));
         if (response.success) {
           handleLoginSuccess();
         } else {

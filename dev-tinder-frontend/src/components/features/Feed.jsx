@@ -48,7 +48,7 @@ const Feed = () => {
             <button className="btn btn-ghost btn-sm">Explore</button>
             <button className="btn btn-ghost btn-sm">Notifications</button>
             <div className="avatar">
-              <div className="w-8 rounded-full">
+              <div className="w-12 rounded-full">
                 <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="User avatar" />
               </div>
             </div>

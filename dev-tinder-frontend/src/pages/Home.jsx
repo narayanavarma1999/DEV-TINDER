@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { fetchUser } from "../utils/constants/login";
-import { addUser } from "../utils/appstore/userslice";
+import { fetchUser } from "../utils/services/api.service";
+import { addUser } from "../utils/appstore/userslice"; ``
 import Navbar from "../components/main/Navbar";
 import Hero from "../components/features/Hero";
 import Features from "../components/features/Features";
 import Footer from "../components/main/Footer";
 import AuthModal from "../components/main/AuthModal";
 import ShimmerLoading from "../utils/spinner/ShimmerLoadings";
+import LoginPrompt from "../utils/popups/LoginPopUp";
+import { useSelector } from "react-redux";
+
 
 const Home = () => {
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
+  const user = useSelector((store) => store.user);
+
 
   const getProfile = async () => {
     try {
@@ -28,7 +34,7 @@ const Home = () => {
       }
     } catch (error) {
       console.error("Error fetching user:", error);
-      navigate('/home');
+      navigate('/redirect');
     } finally {
       setLoading(false);
     }
@@ -46,13 +52,13 @@ const Home = () => {
   const closeAuthModal = () => {
     setAuthModalOpen(false);
   };
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+
   const switchAuthMode = (mode) => {
     setAuthMode(mode);
   };
 
   if (loading) {
-    return <ShimmerLoading />; 
+    return <ShimmerLoading />;
   }
 
   return (
@@ -60,6 +66,7 @@ const Home = () => {
       <Navbar openAuthModal={openAuthModal} />
       <main className="flex-grow">
         <Hero openAuthModal={openAuthModal} />
+        {/* {!user && <LoginPrompt openAuthModal={openAuthModal} />} */}
         <Features />
       </main>
       <Footer />

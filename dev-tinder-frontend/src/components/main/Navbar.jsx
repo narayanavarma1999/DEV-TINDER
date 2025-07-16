@@ -9,6 +9,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { LogOut } from 'lucide-react';
 import { useSelector } from "react-redux";
+import { capitalizeFirstName } from "../../utils/services/api.service";
 
 const Navbar = ({ openAuthModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -62,7 +63,7 @@ const Navbar = ({ openAuthModal }) => {
             ) : (
               <div className="flex items-center gap-3 ml-2">
 
-                <p>Welcome, {user.firstName}</p>
+                <p className="text-primary font-semibold" >Welcome, {capitalizeFirstName(user.firstName)}</p>
 
                 {/* Notification Bell */}
                 <button className="relative p-1 text-gray-700 hover:text-primary transition">
@@ -91,7 +92,7 @@ const Navbar = ({ openAuthModal }) => {
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
                       <Link
                         to="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                         onClick={() => setProfileDropdownOpen(false)}
                       >
                         <UserIcon className="h-4 w-4" />
@@ -99,7 +100,7 @@ const Navbar = ({ openAuthModal }) => {
                       </Link>
                       <Link
                         to="/settings"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                         onClick={() => setProfileDropdownOpen(false)}
                       >
                         <Cog6ToothIcon className="h-4 w-4" />
@@ -110,7 +111,7 @@ const Navbar = ({ openAuthModal }) => {
                           // Add logout logic here
                           setProfileDropdownOpen(false);
                         }}
-                        className="block w-full text-left px-5 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="w-full text-left px-5 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                       >
                         <LogOut className="w-4 h-4" />
                         Logout

@@ -1,4 +1,4 @@
- import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaCheckCircle, FaTimes } from 'react-icons/fa';
 
 const SuccessPopup = ({ message, onClose }) => {
