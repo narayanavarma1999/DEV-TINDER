@@ -14,6 +14,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [authError, setAuthError] = useState(null);
@@ -50,8 +51,9 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
+      setLoading(true)
       if (mode === "login") {
         const response = await loginUser(email, password);
         dispatch(addUser(response.data))
@@ -77,8 +79,14 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
     } catch (error) {
       console.error("Authentication error:", error);
       handleAuthError("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false)
     }
   };
+
+  if (loading) {
+    return <ShimmerLoading />;
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
