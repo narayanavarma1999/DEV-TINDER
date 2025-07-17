@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { SparklesIcon, XMarkIcon } from '@heroicons/react/24/solid';
 
 const LoginPrompt = () => {
+
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
   const [showPrompt, setShowPrompt] = useState(false);
