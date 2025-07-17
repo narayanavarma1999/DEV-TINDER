@@ -1,9 +1,10 @@
 import axios from 'axios'
-import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE } from '../constants/constants'
+import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT } from '../constants/constants'
 
 
 const loginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_LOGIN;
 const registerUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_REGISTER;
+const logoutUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_LOGOUT;
 const profileLoginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_PROFILE;
 
 function parseFullName(name) {
@@ -52,7 +53,7 @@ export const fetchUser = async () => {
         const user = await axios.get(profileLoginUrl, { withCredentials: true })
         return user.data
     } catch (error) {
-        return null
+        console.log(`fetch user error:${error.message}`)
     }
 }
 
@@ -62,4 +63,13 @@ export const capitalizeFirstName = (str) => {
         return str;
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export const logoutUser = async () => {
+    try {
+        const response = await axios.get(logoutUrl, { withCredentials: true })
+        return response.data
+    } catch (error) {
+        console.log(`Error while logout:${error.message}`)
+    }
 }

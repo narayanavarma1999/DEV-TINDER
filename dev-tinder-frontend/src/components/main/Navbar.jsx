@@ -11,10 +11,14 @@ import { LogOut } from 'lucide-react';
 import { useSelector } from "react-redux";
 import { capitalizeFirstName } from "../../utils/services/api.service";
 
-const Navbar = ({ openAuthModal }) => {
+
+
+const Navbar = ({ openAuthModal, handleLogout }) => {
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const user = useSelector((store) => store.user);
+
 
   return (
     <nav className="bg-white/80 backdrop-blur-md fixed w-full z-50 shadow-sm">
@@ -92,7 +96,7 @@ const Navbar = ({ openAuthModal }) => {
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
                       <Link
                         to="/profile"
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="px-4 py-2 text-sm hover:font-semibold text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                         onClick={() => setProfileDropdownOpen(false)}
                       >
                         <UserIcon className="h-4 w-4" />
@@ -100,7 +104,7 @@ const Navbar = ({ openAuthModal }) => {
                       </Link>
                       <Link
                         to="/settings"
-                        className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="px-4 py-2 text-sm hover:font-semibold text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                         onClick={() => setProfileDropdownOpen(false)}
                       >
                         <Cog6ToothIcon className="h-4 w-4" />
@@ -108,10 +112,10 @@ const Navbar = ({ openAuthModal }) => {
                       </Link>
                       <button
                         onClick={() => {
-                          // Add logout logic here
+                          handleLogout(); 
                           setProfileDropdownOpen(false);
                         }}
-                        className="w-full text-left px-5 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                        className="w-full text-left hover:font-semibold  px-5 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                       >
                         <LogOut className="w-4 h-4" />
                         Logout
@@ -216,8 +220,9 @@ const Navbar = ({ openAuthModal }) => {
                   <button
                     onClick={() => {
                       setMobileMenuOpen(false);
+                      handleLogout()
                     }}
-                    className="px-3 py-1.5 text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center gap-2 text-sm"
+                    className="w-full text-left px-5 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                   >
                     Logout
                   </button>

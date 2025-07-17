@@ -10,6 +10,7 @@ import { AuthProvider } from './utils/contexts/AuthContext';
 import AuthWrapper from './utils/contexts/AuthWrapper';
 import LoginPrompt from './utils/popups/LoginPopUp';
 import ShimmerLoading from './utils/spinner/ShimmerLoadings';
+import LogoutPopup from './utils/popups/LogoutPopUp';
 
 export default function App() {
   return (
@@ -24,7 +25,7 @@ export default function App() {
             <Route path="/login" element={<LoginForm />} />
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/lazy" element={<ShimmerLoading />} />
-            <Route path="/check" element={<LoginPrompt />} />
+            <Route path="/logout" element={<LogoutPopup />} />
           </Routes>
         </AuthProvider>
       </Provider>

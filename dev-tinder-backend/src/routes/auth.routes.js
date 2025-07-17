@@ -59,7 +59,13 @@ authRouter.post('/login', async (req, res) => {
          */
         const token = await user.getJWT()
 
-        res.cookie("token", token, { expires: new Date(Date.now() + 8 * 360000) })
+        res.cookie("token", token, {
+            expires: new Date(Date.now() + 8 * 360000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // if using HTTPS
+            sameSite: 'strict', // or 'lax' depending on your needs
+            path: '/'
+        })
         res.status(200).send(user)
     } catch (error) {
         console.error(`Error while login user:${error.message}`)
@@ -71,10 +77,15 @@ authRouter.post('/login', async (req, res) => {
  * logout the user from the platform
  */
 
-authRouter.post('/logout', async (req, res) => {
-    res.clearCookie("token")
+authRouter.get('/logout', async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        path: '/'
+    })
+    res.cookie('token', '', { expires: new Date(0) });
     res.status(200).json({ message: 'Logged out successfully' })
-
 })
 
 module.exports = authRouter 

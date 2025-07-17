@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginSuccess } from '../appstore/authslice';
 import { addUser } from '../appstore/userslice';
@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const dispatch = useDispatch()
+    const userData = useSelector(store => store.user)
 
 
     const getProfile = async () => {
@@ -27,8 +28,6 @@ export const AuthProvider = ({ children }) => {
                 setUser(user)
                 setIsAuthenticated(true)
                 dispatch(loginSuccess(user))
-            } else {
-                navigate('/redirect');
             }
         } catch (error) {
             console.error("Error fetching user:", error);
@@ -39,8 +38,14 @@ export const AuthProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        getProfile();
-    }, [navigate]);
+        if (!userData) {
+            getProfile();
+        }else{
+            setUser(userData);
+            setIsAuthenticated(true);
+            setIsLoading(false);
+        }
+    }, [userData]);
 
     if (isLoading) {
         return <ShimmerLoading />;
@@ -54,7 +59,6 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated
     };
 
-    
     return (
         <AuthContext.Provider value={value}>
             {!isLoading && children}
