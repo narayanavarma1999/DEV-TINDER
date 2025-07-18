@@ -64,7 +64,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
         if (response.success) {
           handleLoginSuccess();
         } else {
-          handleLoginError(response.message);
+          handleLoginError(`Please Check Your Credentials`);
         }
       }
 

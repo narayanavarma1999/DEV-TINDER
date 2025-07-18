@@ -1,10 +1,11 @@
 import axios from 'axios'
-import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT } from '../constants/constants'
+import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT, VITE_REACT_APP_FEED } from '../constants/constants'
 
 
 const loginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_LOGIN;
 const registerUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_REGISTER;
 const logoutUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_LOGOUT;
+const feedUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_FEED;
 const profileLoginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_PROFILE;
 
 function parseFullName(name) {
@@ -71,5 +72,14 @@ export const logoutUser = async () => {
         return response.data
     } catch (error) {
         console.log(`Error while logout:${error.message}`)
+    }
+}
+
+export const getUserFeed = async () => {
+    try {
+        const response = await axios.get(feedUrl, { withCredentials: true })
+        return response.data
+    } catch (error) {
+        console.log(`Error while fetching details:${error.message}`)
     }
 }

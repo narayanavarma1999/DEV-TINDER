@@ -3,7 +3,7 @@ const User = require('../models/user.model');
 const { userAuth } = require('../middlewares/user.auth');
 const ConnectionRequest = require('../models/connection.request.model');
 const STATUS = require('../utils/connection.status.constants');
-const { USER_SAFE_DATA } = require('../utils/constants');
+const { USER_SAFE_DATA, CONNECTION_USER_FIELDS } = require('../utils/constants');
 const userRouter = express.Router()
 
 /* 

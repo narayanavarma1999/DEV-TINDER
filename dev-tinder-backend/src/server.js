@@ -35,24 +35,6 @@ app.use('/request/send', sendRequestRouter)
 app.use('/request/review', revirewRequestRouter)
 
 
-/* 
-*  fetches all the user details
-*/
-
-app.get('/feed', async (_req, res) => {
-    try {
-        const users = await User.find();
-        if (!users) {
-            res.status(404).send('User not found')
-        }
-        res.status(200).send(users)
-    } catch (error) {
-        console.log(`Error while fetching user:${error.message}`)
-        res.status(400).send(`Failed to fetch users`)
-    }
-})
-
-
 app.use('/', (err, _req, res, _next) => {
     console.log(`something went wrong in final call with error message:${err.message}`)
     res.send("Something went wrong " + err.message)

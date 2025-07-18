@@ -8,7 +8,7 @@ const LoginPrompt = () => {
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
   const [showPrompt, setShowPrompt] = useState(false);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(3);
 
   // Show prompt after 1 second delay and start countdown
   useEffect(() => {
