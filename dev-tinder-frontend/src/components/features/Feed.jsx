@@ -1,169 +1,425 @@
-import { FiHeart, FiMessageSquare, FiShare2, FiBookmark, FiMoreHorizontal } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { 
+  HeartIcon, 
+  XMarkIcon, 
+  StarIcon, 
+  UserIcon, 
+  BoltIcon,
+  MapPinIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ArrowPathIcon
+} from '@heroicons/react/24/solid';
+import { motion } from 'framer-motion';
+import axios from 'axios';
+import { getUserFeed } from '../../utils/services/api.service';
 
 const Feed = () => {
-  const posts = [
-    {
-      id: 1,
-      username: 'sarah_designs',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-      time: '2h ago',
-      content: 'Just launched our new product line! Check out the amazing features we built for designers.',
-      image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80',
-      likes: 124,
-      comments: 23,
-      shares: 12
-    },
-    {
-      id: 2,
-      username: 'tech_innovator',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
-      time: '5h ago',
-      content: 'The future of AI in creative tools is brighter than ever. Here are my thoughts on where we\'re heading next...',
-      image: 'https://images.unsplash.com/photo-1677442135136-760c813a743e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80',
-      likes: 89,
-      comments: 15,
-      shares: 7
-    },
-    {
-      id: 3,
-      username: 'creative_minds',
-      avatar: 'https://randomuser.me/api/portraits/women/68.jpg',
-      time: '1d ago',
-      content: 'Collaboration is key to innovation. Our team just wrapped up an amazing project with some incredible partners!',
-      image: 'https://images.unsplash.com/photo-1682686580391-615b3e706739?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1064&q=80',
-      likes: 215,
-      comments: 42,
-      shares: 31
+
+  const [profiles, setProfiles] = useState([]);
+  const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [connections, setConnections] = useState([]);
+  const [showMatchModal, setShowMatchModal] = useState(false);
+  const [matchedProfile, setMatchedProfile] = useState(null);
+
+  // Fetch profiles from API
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      try {
+        setIsLoading(true);
+        const response = await getUserFeed()
+        setProfiles(response.data);
+        setCurrentProfileIndex(0);
+        setCurrentImageIndex(0);
+      } catch (error) {
+        console.error('Error fetching profiles:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfiles();
+  }, []);
+
+  const handleSwipe = async (action) => {
+    if (profiles.length === 0) return;
+
+    const currentProfile = profiles[currentProfileIndex];
+    
+    try {
+      if (action === 'like') {
+        const response = await axios.post('https://api.yourservice.com/likes', {
+          profileId: currentProfile.id
+        });
+
+        if (response.data.isMatch) {
+          setMatchedProfile(currentProfile);
+          setShowMatchModal(true);
+          setConnections([...connections, currentProfile]);
+        }
+      }
+
+      if (currentProfileIndex < profiles.length - 1) {
+        setCurrentProfileIndex(currentProfileIndex + 1);
+        setCurrentImageIndex(0);
+      } else {
+        const response = await axios.get('https://api.yourservice.com/profiles');
+        setProfiles(response.data);
+        setCurrentProfileIndex(0);
+        setCurrentImageIndex(0);
+      }
+    } catch (error) {
+      console.error('Error handling swipe:', error);
     }
-  ];
+  };
+
+  const nextImage = () => {
+    if (currentProfileIndex >= profiles.length) return;
+    if (currentImageIndex < profiles[currentProfileIndex]?.images?.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    }
+  };
+
+  const prevImage = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-700 via-pink-500 to-red-400 flex items-center justify-center">
+        <div className="text-center">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            className="w-16 h-16 border-4 border-white border-t-transparent rounded-full mx-auto"
+          ></motion.div>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-6 text-xl font-medium text-white"
+          >
+            Finding amazing people for you...
+          </motion.p>
+        </div>
+      </div>
+    );
+  }
+
+  if (profiles.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-700 via-pink-500 to-red-400 flex items-center justify-center">
+        <div className="text-center text-white p-6 max-w-md">
+          <motion.h2 
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            className="text-3xl font-bold mb-4"
+          >
+            No more profiles nearby
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-lg mb-6"
+          >
+            We've run out of potential matches in your area.
+          </motion.p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="btn btn-primary btn-lg rounded-full px-8 shadow-lg flex items-center justify-center gap-2 mx-auto"
+            onClick={() => window.location.reload()}
+          >
+            <ArrowPathIcon className="h-5 w-5" />
+            Refresh Profiles
+          </motion.button>
+        </div>
+      </div>
+    );
+  }
+
+  const currentProfile = profiles[currentProfileIndex];
 
   return (
-    <div className="min-h-screen bg-base-100">
+    <div className="min-h-screen bg-gradient-to-br from-purple-700 via-pink-500 to-red-400 relative overflow-hidden">
+      {/* Floating background elements */}
+      <div className="absolute -top-20 -left-20 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute -bottom-10 -right-10 w-72 h-72 bg-yellow-300 opacity-20 rounded-full blur-2xl animate-ping"></div>
+      <div className="absolute top-1/3 right-1/4 w-48 h-48 bg-pink-300 opacity-15 rounded-full blur-xl animate-pulse"></div>
+
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-base-100 bg-opacity-90 backdrop-blur-sm border-b border-base-200">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-primary">Pitch</h1>
-          <div className="flex items-center space-x-4">
-            <button className="btn btn-ghost btn-sm">Home</button>
-            <button className="btn btn-ghost btn-sm">Explore</button>
-            <button className="btn btn-ghost btn-sm">Notifications</button>
-            <div className="avatar">
-              <div className="w-12 rounded-full">
-                <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="User avatar" />
-              </div>
-            </div>
-          </div>
+      <motion.header 
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-20 p-4 flex justify-between items-center"
+      >
+        <motion.button 
+          whileTap={{ scale: 0.9 }}
+          className="btn btn-circle btn-ghost text-white hover:bg-white/10"
+        >
+          <UserIcon className="h-6 w-6" />
+        </motion.button>
+        
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-white">
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300">DevMatch</span>
+          </h1>
+          <p className="text-xs text-white/70">Find your coding partner</p>
         </div>
-      </header>
+        
+        <motion.button 
+          whileTap={{ scale: 0.9 }}
+          className="btn btn-circle btn-ghost text-white hover:bg-white/10"
+        >
+          <BoltIcon className="h-6 w-6" />
+        </motion.button>
+      </motion.header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        {/* Create Post */}
-        <div className="card bg-base-100 shadow-sm mb-6">
-          <div className="card-body">
-            <div className="flex items-start space-x-3">
-              <div className="avatar">
-                <div className="w-12 rounded-full">
-                  <img src="https://randomuser.me/api/portraits/women/33.jpg" alt="User avatar" />
-                </div>
-              </div>
-              <input
-                type="text"
-                placeholder="What's on your mind?"
-                className="input input-bordered w-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      {/* Profile Card */}
+      <div className="relative z-10 flex flex-col items-center justify-center px-4 pt-4 pb-24">
+        <motion.div 
+          key={currentProfileIndex}
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.9, opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="relative w-full max-w-md h-[70vh]"
+        >
+          {/* Card with glass morphism effect */}
+          <div className="absolute inset-0 bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden border border-white/20">
+            {/* Profile Image */}
+            <div className="relative h-3/4 w-full">
+              <img 
+                // src={currentProfile.images[currentImageIndex]} 
+                alt={currentProfile.fullName}
+                className="w-full h-full object-cover"
               />
-            </div>
-            <div className="flex justify-between mt-3">
-              <div className="flex space-x-2">
-                <button className="btn btn-ghost btn-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  Photo
-                </button>
-                <button className="btn btn-ghost btn-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  Video
-                </button>
+              
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+              
+              {/* Profile info overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex justify-between items-end">
+                  <div>
+                    <motion.h2 
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="text-3xl font-bold text-white"
+                    >
+                      {currentProfile.name}, <span className="font-medium">{currentProfile.age}</span>
+                    </motion.h2>
+                    <motion.div 
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                      className="flex items-center mt-1"
+                    >
+                      <MapPinIcon className="h-5 w-5 mr-1 text-yellow-300" />
+                      <span className="text-white/90">{currentProfile.location}</span>
+                    </motion.div>
+                  </div>
+                  <motion.div 
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex space-x-2"
+                  >
+                    {currentProfile?.interests?.slice(0, 3).map((interest, index) => (
+                      <span 
+                        key={index} 
+                        className="badge badge-sm border-white/30 bg-white/10 text-white"
+                      >
+                        {interest}
+                      </span>
+                    ))}
+                  </motion.div>
+                </div>
               </div>
-              <button className="btn btn-primary btn-sm">Post</button>
+              
+              {/* Image navigation indicators */}
+              <div className="absolute bottom-20 left-0 right-0 flex justify-center space-x-2">
+                {currentProfile?.images?.map((_, index) => (
+                  <motion.div 
+                    key={index}
+                    initial={{ width: '0.5rem' }}
+                    animate={{ width: currentImageIndex === index ? '1.5rem' : '0.5rem' }}
+                    className={`h-1.5 rounded-full ${currentImageIndex === index ? 'bg-yellow-300' : 'bg-white/50'}`}
+                  ></motion.div>
+                ))}
+              </div>
+              
+              {/* Previous image button */}
+              <motion.button 
+                whileTap={{ scale: 0.8 }}
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 btn btn-circle btn-sm btn-ghost text-white bg-black/20 hover:bg-black/30 backdrop-blur-sm"
+              >
+                <ChevronLeftIcon className="h-6 w-6" />
+              </motion.button>
+              
+              {/* Next image button */}
+              <motion.button 
+                whileTap={{ scale: 0.8 }}
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 btn btn-circle btn-sm btn-ghost text-white bg-black/20 hover:bg-black/30 backdrop-blur-sm"
+              >
+                <ChevronRightIcon className="h-6 w-6" />
+              </motion.button>
+            </div>
+            
+            {/* Profile details */}
+            <div className="p-6 h-1/4 overflow-y-auto">
+              <motion.h3 
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="font-semibold text-lg text-white mb-2"
+              >
+                About
+              </motion.h3>
+              <motion.p 
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="text-white/80"
+              >
+                {currentProfile.about}
+              </motion.p>
+              
+              <motion.div 
+                initial={{ y: 10, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="mt-4"
+              >
+                <h3 className="font-semibold text-lg text-white mb-2">Tech Stack</h3>
+                <div className="flex flex-wrap gap-2">
+                  {currentProfile?.interests?.map((interest, index) => (
+                    <motion.span 
+                      key={index}
+                      whileHover={{ scale: 1.05 }}
+                      className="badge border-white/30 bg-white/10 text-white hover:bg-white/20 transition-all"
+                    >
+                      {interest}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.div>
+      </div>
 
-        {/* Feed */}
-        <div className="space-y-6">
-          {posts.map(post => (
-            <div key={post.id} className="card bg-base-100 shadow-sm hover:shadow-md transition-shadow duration-300">
-              <div className="card-body">
-                {/* Post Header */}
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center space-x-3">
-                    <div className="avatar">
-                      <div className="w-10 rounded-full">
-                        <img src={post.avatar} alt={post.username} />
-                      </div>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">{post.username}</h3>
-                      <p className="text-sm text-gray-500">{post.time}</p>
-                    </div>
-                  </div>
-                  <button className="btn btn-ghost btn-sm btn-square">
-                    <FiMoreHorizontal className="text-gray-500" />
-                  </button>
-                </div>
+      {/* Action buttons */}
+      <motion.div 
+        initial={{ y: 50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="fixed bottom-0 left-0 right-0 z-10 flex justify-center items-center gap-6 p-6 bg-gradient-to-t from-purple-700/80 via-pink-500/50 to-transparent"
+      >
+        <motion.button 
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => handleSwipe('skip')}
+          className="btn btn-circle btn-lg bg-white/10 hover:bg-white/20 border-white/20 text-white shadow-lg"
+        >
+          <XMarkIcon className="h-8 w-8" />
+        </motion.button>
+        
+        <motion.button 
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          className="btn btn-circle btn-lg bg-white/10 hover:bg-white/20 border-white/20 text-white shadow-lg"
+        >
+          <StarIcon className="h-6 w-6 text-yellow-300" />
+        </motion.button>
+        
+        <motion.button 
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => handleSwipe('like')}
+          className="btn btn-circle btn-lg bg-gradient-to-br from-yellow-300 to-pink-400 border-none text-white shadow-lg hover:shadow-xl"
+        >
+          <HeartIcon className="h-8 w-8" />
+        </motion.button>
+      </motion.div>
 
-                {/* Post Content */}
-                <div className="mt-4">
-                  <p className="text-gray-800">{post.content}</p>
-                  {post.image && (
-                    <div className="mt-4 rounded-lg overflow-hidden">
-                      <img
-                        src={post.image}
-                        alt="Post content"
-                        className="w-full h-auto object-cover rounded-lg transition-transform duration-500 hover:scale-105"
-                      />
-                    </div>
-                  )}
+      {/* Match Modal */}
+      {showMatchModal && matchedProfile && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+        >
+          <motion.div 
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            className="bg-gradient-to-br from-pink-600 to-purple-600 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl"
+          >
+            <motion.div 
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+              className="mb-6"
+            >
+              <HeartIcon className="h-16 w-16 mx-auto text-white" />
+            </motion.div>
+            <h2 className="text-3xl font-bold text-white mb-4">It's a Match!</h2>
+            <p className="text-white/90 mb-6">You and {matchedProfile.name} have liked each other.</p>
+            
+            <div className="flex justify-center space-x-6 mb-8">
+              <motion.div 
+                whileHover={{ y: -5 }}
+                className="w-24 h-24 rounded-full border-4 border-white overflow-hidden"
+              >
+                <img 
+                  src={matchedProfile.images[0]} 
+                  alt={matchedProfile.name}
+                  className="w-full h-full object-cover"
+                />
+              </motion.div>
+              <motion.div 
+                whileHover={{ y: -5 }}
+                className="w-24 h-24 rounded-full border-4 border-white overflow-hidden"
+              >
+                <div className="w-full h-full bg-gray-300 flex items-center justify-center">
+                  <UserIcon className="h-12 w-12 text-gray-500" />
                 </div>
-
-                {/* Post Stats */}
-                <div className="flex justify-between mt-4 text-sm text-gray-500">
-                  <span>{post.likes} likes</span>
-                  <span>{post.comments} comments • {post.shares} shares</span>
-                </div>
-
-                {/* Post Actions */}
-                <div className="flex justify-between mt-3 border-t border-base-200 pt-3">
-                  <button className="btn btn-ghost btn-sm gap-2">
-                    <FiHeart className="text-lg" />
-                    Like
-                  </button>
-                  <button className="btn btn-ghost btn-sm gap-2">
-                    <FiMessageSquare className="text-lg" />
-                    Comment
-                  </button>
-                  <button className="btn btn-ghost btn-sm gap-2">
-                    <FiShare2 className="text-lg" />
-                    Share
-                  </button>
-                  <button className="btn btn-ghost btn-sm gap-2">
-                    <FiBookmark className="text-lg" />
-                    Save
-                  </button>
-                </div>
-              </div>
+              </motion.div>
             </div>
-          ))}
-        </div>
-      </main>
-
-      {/* Sidebar (would be implemented in a layout component) */}
+            
+            <div className="flex justify-center space-x-4">
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowMatchModal(false)}
+                className="btn btn-ghost border-white text-white hover:bg-white/10"
+              >
+                Keep Browsing
+              </motion.button>
+              <motion.button 
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="btn btn-white text-pink-600 hover:bg-white/90"
+              >
+                Send Message
+              </motion.button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </div>
   );
 };
 
-export default Feed
+export default Feed;

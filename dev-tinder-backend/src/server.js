@@ -4,6 +4,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser')
 const authRouter = require('./routes/auth.routes')
 const profileRouter = require('./routes/profile.route')
+const imageUploadRouter = require('./routes/image.upload.route')
 const revirewRequestRouter = require('./routes/review.requests.route')
 const sendRequestRouter = require('./routes/send.requests.route')
 const userRouter = require('./routes/user.routes')
@@ -33,6 +34,8 @@ app.use('/profile', profileRouter)
 app.use('/request/send', sendRequestRouter)
 
 app.use('/request/review', revirewRequestRouter)
+
+app.use('/upload', imageUploadRouter)
 
 
 app.use('/', (err, _req, res, _next) => {

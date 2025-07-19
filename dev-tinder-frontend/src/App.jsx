@@ -11,6 +11,7 @@ import AuthWrapper from './utils/contexts/AuthWrapper';
 import LoginPrompt from './utils/popups/LoginPopUp';
 import ShimmerLoading from './utils/spinner/ShimmerLoadings';
 import LogoutPopup from './utils/popups/LogoutPopUp';
+import Profile from './components/features/Profile';
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/register" element={<RegisterForm />} />
             <Route path="/lazy" element={<ShimmerLoading />} />
             <Route path="/logout" element={<LogoutPopup />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </AuthProvider>
       </Provider>

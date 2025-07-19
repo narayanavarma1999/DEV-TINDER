@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt')
 
 const validateSignUpData = async (req) => {
 
-    const { fullName ,firstName, lastName, emailId, password } = req.body
+    const { fullName, firstName, lastName, emailId, password } = req.body
 
     if (!fullName || fullName.trim().length < 4) {
         throw new Error('Full name is required and must be at least 4 characters long');
@@ -55,7 +55,12 @@ const validateLoginUser = async (emailId, password) => {
 }
 
 const validateEditProfileData = async (req) => {
-    const allowedEditFields = ["firstName", "lastName", "emailId", "photoUrl", "gender", "age", "about", "skills"]
+  
+    delete req.body.createdAt
+    delete req.body._id
+    delete req.body.password
+    
+    const allowedEditFields = ["fullName", "firstName", "lastName", "emailId", "photoUrl", "gender", "age", "about", "skills", "interests", "images", "updatedAt"]
     let isUpdatePayloadValid = Object.keys(req.body).every(key => allowedEditFields.includes(key))
     return isUpdatePayloadValid
 }

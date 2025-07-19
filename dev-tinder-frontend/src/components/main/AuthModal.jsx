@@ -59,6 +59,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
       setLoading(true)
       if (mode === "login") {
         const response = await loginUser(email, password);
+        console.log(`EMAIL LOGIN RESPONSE:${JSON.stringify(response)}`)
         dispatch(addUser(response.data))
         dispatch(loginSuccess(response.data));
         if (response.success) {

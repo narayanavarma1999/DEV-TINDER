@@ -85,6 +85,14 @@ const userSchema = new mongoose.Schema({
         type: String
     },
 
+    interests: {
+        type: [String]
+    },
+
+    images: {
+        type: [String]
+    },
+
     skills: {
         type: [String]
     }
