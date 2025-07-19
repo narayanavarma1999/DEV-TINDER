@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT, VITE_REACT_APP_FEED, VITE_REACT_APP_EDIT_PROFILE, VITE_REACT_APP_IMAGE_UPLOAD } from '../constants/constants'
+import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT, VITE_REACT_APP_FEED, VITE_REACT_APP_EDIT_PROFILE, VITE_REACT_APP_IMAGE_UPLOAD, VITE_REACT_APP_USER_CONNECTIONS } from '../constants/constants'
 
 
 const loginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_LOGIN;
@@ -9,6 +9,7 @@ const feedUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_FEED;
 const profileLoginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_PROFILE;
 const editProfileUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_EDIT_PROFILE;
 const imageUploadUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_IMAGE_UPLOAD;
+const userConnectionsUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_USER_CONNECTIONS;
 
 function parseFullName(name) {
 
@@ -105,5 +106,15 @@ export const uploadImage = async (formData) => {
         return response.data;
     } catch (error) {
         throw error.response?.data || error.message;
+    }
+}
+
+
+export const fetchUserConnections = async () => {
+    try {
+        const response = await axios.get(userConnectionsUrl, { withCredentials: true });
+        return response.data
+    } catch (error) {
+        console.log(`error while fetching connections:${error.message}`)
     }
 }

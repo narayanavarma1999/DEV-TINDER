@@ -12,6 +12,7 @@ import LoginPrompt from './utils/popups/LoginPopUp';
 import ShimmerLoading from './utils/spinner/ShimmerLoadings';
 import LogoutPopup from './utils/popups/LogoutPopUp';
 import Profile from './components/features/Profile';
+import Connections from './components/features/Connections'
 
 export default function App() {
   return (
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/lazy" element={<ShimmerLoading />} />
             <Route path="/logout" element={<LogoutPopup />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/connections" element={<Connections />} />
           </Routes>
         </AuthProvider>
       </Provider>

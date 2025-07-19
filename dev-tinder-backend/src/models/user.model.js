@@ -24,8 +24,6 @@ const userSchema = new mongoose.Schema({
     lastName: {
         type: String,
         trim: true,
-        minLength: 4,
-        maxLength: 50
     },
 
     emailId: {
@@ -82,6 +80,10 @@ const userSchema = new mongoose.Schema({
     },
 
     about: {
+        type: String
+    },
+
+    location: {
         type: String
     },
 

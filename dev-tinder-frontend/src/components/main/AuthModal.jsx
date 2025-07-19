@@ -33,7 +33,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
   const handleRegisterSuccess = () => {
     setSuccessMessage('Your account has been created successfully!');
     setShowSuccess(true);
-    navigate('/feed');
+    navigate('/home');
   };
 
   const handleLoginError = (message) => {
@@ -59,7 +59,6 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
       setLoading(true)
       if (mode === "login") {
         const response = await loginUser(email, password);
-        console.log(`EMAIL LOGIN RESPONSE:${JSON.stringify(response)}`)
         dispatch(addUser(response.data))
         dispatch(loginSuccess(response.data));
         if (response.success) {
@@ -273,7 +272,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
       {showSuccess && (
         <SuccessPopup
           message={successMessage}
-          onClose={() => setShowSuccess(false)}
+          onClose={() => {setShowSuccess(false)}}
         />
       )}
 

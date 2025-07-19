@@ -55,12 +55,12 @@ const validateLoginUser = async (emailId, password) => {
 }
 
 const validateEditProfileData = async (req) => {
-  
+
     delete req.body.createdAt
     delete req.body._id
     delete req.body.password
-    
-    const allowedEditFields = ["fullName", "firstName", "lastName", "emailId", "photoUrl", "gender", "age", "about", "skills", "interests", "images", "updatedAt"]
+
+    const allowedEditFields = ["fullName", "firstName", "lastName", "emailId", "photoUrl", "gender", "age", "about", "skills", "interests", "images", "location", "updatedAt"]
     let isUpdatePayloadValid = Object.keys(req.body).every(key => allowedEditFields.includes(key))
     return isUpdatePayloadValid
 }

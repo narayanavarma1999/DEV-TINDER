@@ -19,5 +19,8 @@
 -  If token is not present the user is redirect to home page
 -  Restricted to access only authenticated routes using authwrapper
 -  Implemented Logout functionality
+-  Created a Profile and Feed Component Page
+-  Implemented the edit user details for profile page
+-  Toast on successfull submission of user details  
 
       

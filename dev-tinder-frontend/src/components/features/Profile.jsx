@@ -1,186 +1,194 @@
-import { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { toast } from 'react-hot-toast'
-import { editProfile, fetchUser, uploadImage } from '../../utils/services/api.service'
-import { useSelector } from 'react-redux'
-import ShimmerLoading from '../../utils/spinner/ShimmerLoadings'
-import { FiUpload, FiX, FiPlus, FiEdit2, FiSave, FiTrash2 } from 'react-icons/fi'
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { editProfile, fetchUser, uploadImage } from '../../utils/services/api.service';
+import { useSelector } from 'react-redux';
+import ShimmerLoading from '../../utils/spinner/ShimmerLoadings';
+import { FiUpload, FiX, FiPlus, FiEdit2, FiSave, FiTrash2 } from 'react-icons/fi';
+import Location from './Locations';
 
 const Profile = () => {
-  const [user, setUser] = useState(null)
-  const [isEditing, setIsEditing] = useState(false)
-  const [editedUser, setEditedUser] = useState({})
-  const [isLoading, setIsLoading] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-  const [activeImageIndex, setActiveImageIndex] = useState(null)
-  const fileInputRef = useRef(null)
-  const profilePhotoInputRef = useRef(null)
-  const navigate = useNavigate()
 
-  const userData = useSelector((store) => store.user)
+  const [user, setUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedUser, setEditedUser] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [activeImageIndex, setActiveImageIndex] = useState(null);
+  const fileInputRef = useRef(null);
+  const profilePhotoInputRef = useRef(null);
+  const navigate = useNavigate();
+
+  const userData = useSelector((store) => store.user);
 
   useEffect(() => {
     const fetchProfile = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const response = await fetchUser()
-        setUser(response.data)
-        setEditedUser(response.data)
+        const response = await fetchUser();
+        setUser(response.data);
+        setEditedUser(response.data);
       } catch (error) {
-        toast.error('Failed to fetch profile')
-        console.error(error)
+        toast.error('Failed to fetch profile');
+        console.error(error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
-    }
+    };
 
     if (!userData) {
-      fetchProfile()
+      fetchProfile();
     } else {
-      setUser(userData)
-      setEditedUser(userData)
+      setUser(userData);
+      setEditedUser(userData);
     }
-  }, [])
+  }, []);
 
   const handleEditChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setEditedUser(prev => ({
       ...prev,
       [name]: value
-    }))
-  }
+    }));
+  };
 
   const handleArrayEdit = (field, value, index) => {
-    const newArray = [...(editedUser[field] || [])]
-    newArray[index] = value
+    const newArray = [...(editedUser[field] || [])];
+    newArray[index] = value;
     setEditedUser(prev => ({
       ...prev,
       [field]: newArray
-    }))
-  }
+    }));
+  };
 
   const addArrayItem = (field) => {
     setEditedUser(prev => ({
       ...prev,
       [field]: [...(prev[field] || []), '']
-    }))
-  }
+    }));
+  };
 
   const removeArrayItem = (field, index) => {
-    const newArray = [...(editedUser[field] || [])]
-    newArray.splice(index, 1)
+    const newArray = [...(editedUser[field] || [])];
+    newArray.splice(index, 1);
     setEditedUser(prev => ({
       ...prev,
       [field]: newArray
-    }))
-  }
+    }));
+  };
 
   const handleSave = async () => {
     try {
-      const response = await editProfile(editedUser)
-      console.log(`edit user response:${JSON.stringify(response)}`)
-      setUser(response.data)
-      setIsEditing(false)
-      toast.success(response.data.message)
-      navigate('/profile')
+      const response = await editProfile(editedUser);
+      setUser(response.data);
+      setIsEditing(false);
+      toast.success(response.data.message || 'Profile updated successfully!');
+      navigate('/profile');
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to update profile')
-      console.error(error)
+      toast.error(error.response?.data?.message || 'Failed to update profile');
+      console.error(error);
     }
-  }
+  };
 
   const handleImageUpload = async (e, index = null) => {
-    const file = e.target.files[0]
-    if (!file) return
+    const file = e.target.files[0];
+    if (!file) return;
 
-    // Check if file is an image
     if (!file.type.match('image.*')) {
-      toast.error('Please select an image file')
-      return
+      toast.error('Please select an image file');
+      return;
     }
 
-    // Check file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size should be less than 5MB')
-      return
+      toast.error('Image size should be less than 5MB');
+      return;
     }
 
-    setIsUploading(true)
+    setIsUploading(true);
     try {
-      const formData = new FormData()
-      formData.append('image', file)
+      const formData = new FormData();
+      formData.append('image', file);
 
-      const response = await uploadImage(formData)
-      const imageUrl = response.data.url
+      const response = await uploadImage(formData);
+      const imageUrl = response.data.url;
 
       if (index !== null) {
-        // Update existing image
-        handleArrayEdit('images', imageUrl, index)
+        handleArrayEdit('images', imageUrl, index);
       } else {
-        // Add new image
-        addArrayItem('images')
-        const newIndex = editedUser.images ? editedUser.images.length : 0
-        handleArrayEdit('images', imageUrl, newIndex)
+        addArrayItem('images');
+        const newIndex = editedUser.images ? editedUser.images.length : 0;
+        handleArrayEdit('images', imageUrl, newIndex);
       }
 
-      toast.success('Image uploaded successfully!')
+      toast.success('Image uploaded successfully!');
     } catch (error) {
-      toast.error('Failed to upload image')
-      console.error(error)
+      toast.error('Failed to upload image');
+      console.error(error);
     } finally {
-      setIsUploading(false)
-      e.target.value = '' // Reset file input
+      setIsUploading(false);
+      e.target.value = '';
     }
-  }
+  };
 
   const triggerFileInput = (index = null) => {
-    setActiveImageIndex(index)
-    fileInputRef.current.click()
-  }
+    setActiveImageIndex(index);
+    fileInputRef.current.click();
+  };
 
   const triggerProfilePhotoInput = () => {
-    profilePhotoInputRef.current.click()
-  }
+    profilePhotoInputRef.current.click();
+  };
 
   const handleProfilePhotoUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
+    const file = e.target.files[0];
+    if (!file) return;
 
     if (!file.type.match('image.*')) {
-      toast.error('Please select an image file')
-      return
+      toast.error('Please select an image file');
+      return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('Image size should be less than 5MB')
-      return
+      toast.error('Image size should be less than 5MB');
+      return;
     }
 
-    setIsUploading(true)
+    setIsUploading(true);
     try {
-      const formData = new FormData()
-      formData.append('image', file)
+      const formData = new FormData();
+      formData.append('image', file);
 
-      const response = await uploadImage(formData)
-      const imageUrl = response.data.url
+      const response = await uploadImage(formData);
+      const imageUrl = response.data.url;
 
       setEditedUser(prev => ({
         ...prev,
         photoUrl: imageUrl
-      }))
+      }));
 
-      toast.success('Profile photo updated successfully!')
+      toast.success('Profile photo updated successfully!');
     } catch (error) {
-      toast.error('Failed to upload profile photo')
-      console.error(error)
+      toast.error('Failed to upload profile photo');
+      console.error(error);
     } finally {
-      setIsUploading(false)
-      e.target.value = ''
+      setIsUploading(false);
+      e.target.value = '';
     }
-  }
+  };
+
+  const handleLocationSelect = (location) => {
+    if (typeof location === 'string') {
+      setEditedUser(prev => ({
+        ...prev,
+        location: location
+      }));
+    } else {
+      console.error('Invalid location data:', location);
+    }
+  };
 
   if (isLoading) {
-    return <ShimmerLoading />
+    return <ShimmerLoading />;
   }
 
   if (!user) {
@@ -205,21 +213,19 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
-    
     <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
-      {/* Hidden file input */}
       <input
         type="file"
         ref={fileInputRef}
         onChange={(e) => {
           if (activeImageIndex !== null) {
-            handleImageUpload(e, activeImageIndex)
+            handleImageUpload(e, activeImageIndex);
           } else {
-            handleImageUpload(e)
+            handleImageUpload(e);
           }
         }}
         accept="image/*"
@@ -358,12 +364,46 @@ const Profile = () => {
                     <p className="text-xl text-base-content/70 mt-2">
                       {user.firstName} {user.lastName}
                     </p>
+                    {user.location && (
+                      <div className="mt-2 flex items-center text-base-content/70">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 mr-1"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        <span>{user.location}</span>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
 
+              {/* Location Component */}
+             { isEditing && <div className="w-full lg:w-auto">
+                <Location
+                  onLocationSelect={handleLocationSelect}
+                  placeholder="Enter your city, address, or ZIP code"
+                  initialValue={editedUser.location || ''}
+                />
+              </div>}
+
               {/* Stats */}
-              <div className="stats shadow bg-base-200/50">
+              <div className="flex justify-between stats shadow bg-base-200/50">
                 <div className="stat">
                   <div className="stat-title text-primary font-semibold">Age</div>
                   {isEditing ? (
@@ -676,29 +716,6 @@ const Profile = () => {
                       />
                     ) : (
                       <div className="text-base-content">{user.emailId}</div>
-                    )}
-                  </div>
-                  <div>
-                    <div className="text-sm text-base-content/50">Profile Photo URL</div>
-                    {isEditing ? (
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="url"
-                          name="photoUrl"
-                          value={editedUser.photoUrl || ''}
-                          onChange={handleEditChange}
-                          className="input input-bordered flex-1"
-                        />
-                        <button
-                          onClick={triggerProfilePhotoInput}
-                          className="btn btn-square btn-sm btn-accent"
-                          title="Upload new photo"
-                        >
-                          <FiUpload />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="text-base-content break-all">{user.photoUrl}</div>
                     )}
                   </div>
                 </div>
