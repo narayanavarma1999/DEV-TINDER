@@ -34,18 +34,18 @@ const Navbar = ({ openAuthModal, handleLogout }) => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
             <div className="flex gap-5">
-              <Link to="/features" className="text-gray-700 hover:text-primary transition px-2 py-1">
-                Features
-              </Link>
-              <Link to="/templates" className="text-gray-700 hover:text-primary transition px-2 py-1">
-                Templates
-              </Link>
-              <Link to="/pricing" className="text-gray-700 hover:text-primary transition px-2 py-1">
-                Pricing
-              </Link>
-              <Link to="/blog" className="text-gray-700 hover:text-primary transition px-2 py-1">
-                Blog
-              </Link>
+              {user && <Link to="/home" className="text-gray-700  text-sm hover:text-primary font-semibold transition px-2 py-1">
+                Home
+              </Link>}
+              {user && <Link to="/connections" className="text-gray-700  text-sm hover:text-primary font-semibold transition px-2 py-1">
+                Connections
+              </Link>}
+              {user && <Link to="/requests" className="text-gray-700 text-sm hover:text-primary font-semibold transition px-2 py-1">
+                Requests
+              </Link>}
+              {user && <Link to="/profile" className="text-gray-700 text-sm  hover:text-primary font-semibold transition px-2 py-1">
+                Profile
+              </Link>}
             </div>
 
             {/* Auth Buttons or Profile */}
@@ -112,7 +112,7 @@ const Navbar = ({ openAuthModal, handleLogout }) => {
                       </Link>
                       <button
                         onClick={() => {
-                          handleLogout(); 
+                          handleLogout();
                           setProfileDropdownOpen(false);
                         }}
                         className="w-full text-left hover:font-semibold  px-5 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"

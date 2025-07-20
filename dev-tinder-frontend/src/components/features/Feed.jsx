@@ -8,6 +8,7 @@ import {
   MapPinIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  ArrowLeftIcon,
   ArrowPathIcon,
   ChatBubbleBottomCenterTextIcon
 } from '@heroicons/react/24/solid';
@@ -115,6 +116,26 @@ const Feed = () => {
   if (profiles.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-700 via-pink-500 to-red-400 flex items-center justify-center relative overflow-hidden">
+
+        <motion.header
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-20 p-6 pb-4"
+        >
+          <div className="flex justify-between items-center mb-6">
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="btn btn-circle btn-ghost text-white hover:bg-white/10"
+              onClick={() => window.history.back()}
+            >
+              <ArrowLeftIcon className="h-6 w-6" />
+            </motion.button>
+          </div>
+        </motion.header>
+
+
         {/* Matching background elements from intro page */}
         <div className="absolute -top-20 -left-20 w-72 h-72 bg-white opacity-10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-10 -right-10 w-72 h-72 bg-yellow-300 opacity-20 rounded-full blur-2xl animate-ping"></div>

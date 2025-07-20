@@ -24,7 +24,7 @@ const Location = ({
     <div className="w-full">
       <div className="form-control w-full">
         <label className="label">
-          <span className="label-text text-sm font-semibold text-primary">Your Location</span>
+          <span className="label-text text-sm  border-primary font-semibold text-white">Your Location</span>
         </label>
         <input
           type="text"

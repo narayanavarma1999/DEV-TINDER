@@ -4,11 +4,10 @@ import { toast } from 'react-hot-toast';
 import { editProfile, fetchUser, uploadImage } from '../../utils/services/api.service';
 import { useSelector } from 'react-redux';
 import ShimmerLoading from '../../utils/spinner/ShimmerLoadings';
-import { FiUpload, FiX, FiPlus, FiEdit2, FiSave, FiTrash2 } from 'react-icons/fi';
+import { FiUpload, FiX, FiPlus, FiEdit2, FiSave, FiTrash2, FiUser, FiMail, FiMapPin, FiCalendar } from 'react-icons/fi';
 import Location from './Locations';
 
 const Profile = () => {
-
   const [user, setUser] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedUser, setEditedUser] = useState({});
@@ -115,9 +114,18 @@ const Profile = () => {
       if (index !== null) {
         handleArrayEdit('images', imageUrl, index);
       } else {
-        addArrayItem('images');
-        const newIndex = editedUser.images ? editedUser.images.length : 0;
-        handleArrayEdit('images', imageUrl, newIndex);
+        // Initialize images array if it doesn't exist
+        if (!editedUser.images) {
+          setEditedUser(prev => ({
+            ...prev,
+            images: []
+          }));
+        }
+        // Add new image to the array
+        setEditedUser(prev => ({
+          ...prev,
+          images: [...(prev.images || []), imageUrl]
+        }));
       }
 
       toast.success('Image uploaded successfully!');
@@ -217,7 +225,13 @@ const Profile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-base-100 to-base-200 bg-slate-950 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 py-12 px-4 sm:px-6 lg:px-8">
+      {/* Background decorative elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-64 h-64 bg-purple-600 rounded-full filter blur-3xl opacity-10 mix-blend-multiply"></div>
+        <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-600 rounded-full filter blur-3xl opacity-10 mix-blend-multiply"></div>
+      </div>
+
       <input
         type="file"
         ref={fileInputRef}
@@ -242,29 +256,32 @@ const Profile = () => {
 
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Profile Header */}
-        <div className="bg-base-100/90 backdrop-blur-sm rounded-3xl shadow-xl overflow-hidden mb-8 relative border border-white/10">
+        <div className="bg-slate-800/80 backdrop-blur-lg rounded-3xl shadow-xl overflow-hidden mb-8 relative border border-white/10">
           {/* Gradient header */}
           <div className="relative h-48 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600">
             {/* Profile photo */}
             <div className="absolute -bottom-16 left-8 group">
               <div className="avatar">
-                <div className="w-32 h-32 rounded-full ring-4 ring-base-100 relative">
+                <div className="w-32 h-32 rounded-full ring-4 ring-slate-800 relative transition-all duration-300 hover:ring-primary/80">
                   <img
                     src={editedUser.photoUrl || '/default-avatar.png'}
                     alt={`${user.fullName}'s profile`}
                     className="object-cover w-full h-full"
+                    onError={(e) => {
+                      e.target.src = '/default-avatar.png';
+                    }}
                   />
                   {isEditing && (
                     <>
                       <button
                         onClick={triggerProfilePhotoInput}
-                        className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                        className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                       >
                         <FiUpload className="text-white text-2xl" />
                       </button>
                       {isUploading && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full">
-                          <span className="loading loading-spinner text-primary"></span>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
+                          <span className="loading loading-spinner text-white"></span>
                         </div>
                       )}
                     </>
@@ -279,13 +296,13 @@ const Profile = () => {
                 <div className="flex space-x-4">
                   <button
                     onClick={() => setIsEditing(false)}
-                    className="btn btn-outline btn-error text-gray-600 bg-white hover:bg-white/90"
+                    className="btn  bg-white text-black"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={handleSave}
-                    className="btn btn-primary"
+                    className="btn btn-primary hover:bg-primary/90"
                     disabled={isUploading}
                   >
                     {isUploading ? (
@@ -318,41 +335,41 @@ const Profile = () => {
                   <div className="space-y-4">
                     <div className="form-control">
                       <label className="label">
-                        <span className="label-text text-primary font-semibold">Full Name</span>
+                        <span className="label-text text-white font-semibold">Full Name</span>
                       </label>
                       <input
                         type="text"
                         name="fullName"
                         value={editedUser.fullName || ''}
                         onChange={handleEditChange}
-                        className="input input-bordered w-full"
+                        className="input input-bordered w-full bg-white border-slate-600 focus:border-primary focus:ring-1 focus:ring-primary"
                         placeholder="Your full name"
                       />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="form-control">
                         <label className="label">
-                          <span className="label-text text-primary font-semibold">First Name</span>
+                          <span className="label-text text-white font-semibold">First Name</span>
                         </label>
                         <input
                           type="text"
                           name="firstName"
                           value={editedUser.firstName || ''}
                           onChange={handleEditChange}
-                          className="input input-bordered"
+                          className="input input-bordered tex bg-white border-slate-600 focus:border-primary focus:ring-1 focus:ring-primary"
                           placeholder="First name"
                         />
                       </div>
                       <div className="form-control">
                         <label className="label">
-                          <span className="label-text text-primary font-semibold">Last Name</span>
+                          <span className="label-text text-white font-semibold">Last Name</span>
                         </label>
                         <input
                           type="text"
                           name="lastName"
                           value={editedUser.lastName || ''}
                           onChange={handleEditChange}
-                          className="input input-bordered"
+                          className="input input-bordered bg-white border-slate-600 focus:border-primary focus:ring-1 focus:ring-primary"
                           placeholder="Last name"
                         />
                       </div>
@@ -360,32 +377,13 @@ const Profile = () => {
                   </div>
                 ) : (
                   <div>
-                    <h1 className="text-4xl font-bold text-base-content">{user.fullName}</h1>
-                    <p className="text-xl text-base-content/70 mt-2">
+                    <h1 className="text-4xl font-bold text-white">{user.fullName}</h1>
+                    <p className="text-xl text-slate-300 mt-2">
                       {user.firstName} {user.lastName}
                     </p>
                     {user.location && (
-                      <div className="mt-2 flex items-center text-base-content/70">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-5 w-5 mr-1"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
+                      <div className="mt-4 flex items-center text-slate-300">
+                        <FiMapPin className="mr-2" />
                         <span>{user.location}</span>
                       </div>
                     )}
@@ -394,7 +392,7 @@ const Profile = () => {
               </div>
 
               {/* Location Component */}
-             { isEditing && <div className="w-full lg:w-auto">
+              {isEditing && <div className="w-full lg:w-auto">
                 <Location
                   onLocationSelect={handleLocationSelect}
                   placeholder="Enter your city, address, or ZIP code"
@@ -403,39 +401,43 @@ const Profile = () => {
               </div>}
 
               {/* Stats */}
-              <div className="flex justify-between stats shadow bg-base-200/50">
+              <div className="flex justify-between stats shadow bg-slate-700/50 backdrop-blur-sm">
                 <div className="stat">
-                  <div className="stat-title text-primary font-semibold">Age</div>
+                  <div className="stat-title text-white font-semibold flex items-center">
+                    <FiCalendar className="mr-1" /> Age
+                  </div>
                   {isEditing ? (
                     <input
                       type="number"
                       name="age"
                       value={editedUser.age || ''}
                       onChange={handleEditChange}
-                      className="stat-value input input-sm input-bordered w-20 text-sm"
+                      className="stat-value input input-sm input-bordered w-20 text-sm bg-white border-slate-600 focus:border-primary focus:ring-1 focus:ring-primary"
                       min="18"
                       max="100"
                     />
                   ) : (
-                    <div className="stat-value text-sm">{user.age || 'N/A'}</div>
+                    <div className="stat-value text-sm text-white">{user.age || 'N/A'}</div>
                   )}
                 </div>
                 <div className="stat">
-                  <div className="stat-title text-primary font-semibold">Gender</div>
+                  <div className="stat-title text-white font-semibold flex items-center">
+                    <FiUser className="mr-1" /> Gender
+                  </div>
                   {isEditing ? (
                     <select
                       name="gender"
                       value={editedUser.gender || ''}
                       onChange={handleEditChange}
-                      className="h-10 stat-value select select-sm select-bordered text-sm"
+                      className="h-10 stat-value select select-sm select-bordered text-sm bg-white border-slate-600 focus:border-primary focus:ring-1 focus:ring-primary"
                     >
-                      <option value="">select</option>
-                      <option value="male">male</option>
-                      <option value="female">female</option>
-                      <option value="other">other</option>
+                      <option value="">Select</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
                     </select>
                   ) : (
-                    <div className="stat-value capitalize text-sm">{user.gender || 'N/A'}</div>
+                    <div className="stat-value capitalize text-sm text-white">{user.gender || 'N/A'}</div>
                   )}
                 </div>
               </div>
@@ -448,19 +450,19 @@ const Profile = () => {
           {/* Left Column */}
           <div className="lg:col-span-2 space-y-8">
             {/* About Section */}
-            <div className="card bg-base-100/90 backdrop-blur-sm shadow-xl border border-white/10">
+            <div className="card bg-slate-800/80 backdrop-blur-sm shadow-xl border border-white/10">
               <div className="card-body">
-                <h2 className="card-title">About</h2>
+                <h2 className="card-title text-white">About</h2>
                 {isEditing ? (
                   <textarea
                     name="about"
                     value={editedUser.about || ''}
                     onChange={handleEditChange}
-                    className="textarea textarea-bordered h-32"
+                    className="textarea textarea-bordered h-32 bg-slate-700/50 border-slate-600 focus:border-primary focus:ring-1 focus:ring-primary text-white"
                     placeholder="Tell us about yourself..."
                   />
                 ) : (
-                  <p className="text-base-content/80">
+                  <p className="text-slate-300">
                     {user.about || 'No about information provided yet.'}
                   </p>
                 )}
@@ -468,14 +470,14 @@ const Profile = () => {
             </div>
 
             {/* Skills Section */}
-            <div className="card bg-base-100/90 backdrop-blur-sm shadow-xl border border-white/10">
+            <div className="card bg-slate-800/80 backdrop-blur-sm shadow-xl border border-white/10">
               <div className="card-body">
                 <div className="flex justify-between items-center">
-                  <h2 className="card-title">Skills</h2>
+                  <h2 className="card-title text-white">Skills</h2>
                   {isEditing && (
                     <button
                       onClick={() => addArrayItem('skills')}
-                      className="btn btn-sm btn-circle btn-primary"
+                      className="btn btn-sm btn-circle btn-primary hover:bg-primary/90"
                     >
                       <FiPlus />
                     </button>
@@ -489,12 +491,12 @@ const Profile = () => {
                           type="text"
                           value={skill}
                           onChange={(e) => handleArrayEdit('skills', e.target.value, index)}
-                          className="input input-bordered flex-1"
+                          className="input input-bordered flex-1 bg-slate-700/50 border-slate-600 focus:border-primary focus:ring-1 focus:ring-primary text-white"
                           placeholder="Skill name"
                         />
                         <button
                           onClick={() => removeArrayItem('skills', index)}
-                          className="btn btn-sm btn-circle btn-error"
+                          className="btn btn-sm btn-circle btn-error hover:bg-error/90"
                         >
                           <FiX />
                         </button>
@@ -502,10 +504,10 @@ const Profile = () => {
                     ))}
                     {(!editedUser.skills || editedUser.skills.length === 0) && (
                       <div className="flex items-center justify-between">
-                        <p className="text-base-content/50">No skills added yet.</p>
+                        <p className="text-slate-400">No skills added yet.</p>
                         <button
                           onClick={() => addArrayItem('skills')}
-                          className="btn btn-sm btn-primary"
+                          className="btn btn-sm btn-primary hover:bg-primary/90"
                         >
                           <FiPlus className="mr-1" /> Add Skill
                         </button>
@@ -516,16 +518,16 @@ const Profile = () => {
                   <div className="flex flex-wrap gap-2">
                     {user.skills?.length > 0 ? (
                       user.skills.map((skill, index) => (
-                        <span key={index} className="badge badge-primary badge-lg">
+                        <span key={index} className="badge badge-primary badge-lg hover:bg-primary/90">
                           {skill}
                         </span>
                       ))
                     ) : (
                       <div className="w-full text-center py-4">
-                        <p className="text-base-content/50 mb-2">No skills added yet</p>
+                        <p className="text-slate-400 mb-2">No skills added yet</p>
                         <button
                           onClick={() => setIsEditing(true)}
-                          className="btn btn-sm btn-primary"
+                          className="btn btn-sm btn-primary hover:bg-primary/90"
                         >
                           <FiPlus className="mr-1" /> Add Skills
                         </button>
@@ -537,14 +539,14 @@ const Profile = () => {
             </div>
 
             {/* Interests Section */}
-            <div className="card bg-base-100/90 backdrop-blur-sm shadow-xl border border-white/10">
+            <div className="card bg-slate-800/80 backdrop-blur-sm shadow-xl border border-white/10">
               <div className="card-body">
                 <div className="flex justify-between items-center">
-                  <h2 className="card-title">Interests</h2>
+                  <h2 className="card-title text-white">Interests</h2>
                   {isEditing && (
                     <button
                       onClick={() => addArrayItem('interests')}
-                      className="btn btn-sm btn-circle btn-primary"
+                      className="btn btn-sm btn-circle btn-secondary hover:bg-secondary/90"
                     >
                       <FiPlus />
                     </button>
@@ -558,12 +560,12 @@ const Profile = () => {
                           type="text"
                           value={interest}
                           onChange={(e) => handleArrayEdit('interests', e.target.value, index)}
-                          className="input input-bordered flex-1"
+                          className="input input-bordered flex-1 bg-slate-700/50 border-slate-600 focus:border-secondary focus:ring-1 focus:ring-secondary text-white"
                           placeholder="Interest"
                         />
                         <button
                           onClick={() => removeArrayItem('interests', index)}
-                          className="btn btn-sm btn-circle btn-error"
+                          className="btn btn-sm btn-circle btn-error hover:bg-error/90"
                         >
                           <FiX />
                         </button>
@@ -571,10 +573,10 @@ const Profile = () => {
                     ))}
                     {(!editedUser.interests || editedUser.interests.length === 0) && (
                       <div className="flex items-center justify-between">
-                        <p className="text-base-content/50">No interests added yet.</p>
+                        <p className="text-slate-400">No interests added yet.</p>
                         <button
                           onClick={() => addArrayItem('interests')}
-                          className="btn btn-sm btn-primary"
+                          className="btn btn-sm btn-secondary hover:bg-secondary/90"
                         >
                           <FiPlus className="mr-1" /> Add Interest
                         </button>
@@ -585,16 +587,16 @@ const Profile = () => {
                   <div className="flex flex-wrap gap-2">
                     {user.interests?.length > 0 ? (
                       user.interests.map((interest, index) => (
-                        <span key={index} className="badge badge-secondary badge-lg">
+                        <span key={index} className="badge badge-secondary badge-lg hover:bg-secondary/90">
                           {interest}
                         </span>
                       ))
                     ) : (
                       <div className="w-full text-center py-4">
-                        <p className="text-base-content/50 mb-2">No interests added yet</p>
+                        <p className="text-slate-400 mb-2">No interests added yet</p>
                         <button
                           onClick={() => setIsEditing(true)}
-                          className="btn btn-sm btn-secondary"
+                          className="btn btn-sm btn-secondary hover:bg-secondary/90"
                         >
                           <FiPlus className="mr-1" /> Add Interests
                         </button>
@@ -609,14 +611,14 @@ const Profile = () => {
           {/* Right Column */}
           <div className="space-y-8">
             {/* Gallery Section */}
-            <div className="card bg-base-100/90 backdrop-blur-sm shadow-xl border border-white/10">
+            <div className="card bg-slate-800/80 backdrop-blur-sm shadow-xl border border-white/10">
               <div className="card-body">
                 <div className="flex justify-between items-center">
-                  <h2 className="card-title">Gallery</h2>
+                  <h2 className="card-title text-white">Gallery</h2>
                   {isEditing && (
                     <button
                       onClick={() => triggerFileInput()}
-                      className="btn btn-sm btn-circle btn-primary"
+                      className="btn btn-sm btn-circle btn-primary hover:bg-primary/90"
                       disabled={isUploading}
                     >
                       {isUploading ? (
@@ -631,28 +633,28 @@ const Profile = () => {
                   <div className="space-y-4">
                     {editedUser.images?.map((image, index) => (
                       <div key={index} className="relative group">
-                        <div className="aspect-square overflow-hidden rounded-lg bg-base-200">
+                        <div className="aspect-square overflow-hidden rounded-lg bg-slate-700/50">
                           {image ? (
                             <img
                               src={image}
                               alt={`Gallery item ${index + 1}`}
-                              className="object-cover w-full h-full"
+                              className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <span className="text-base-content/50">No image</span>
+                            <div className="w-full h-full flex items-center justify-center text-slate-400">
+                              <span>No image</span>
                             </div>
                           )}
-                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
                             <button
                               onClick={() => triggerFileInput(index)}
-                              className="btn btn-sm btn-accent mr-2"
+                              className="btn btn-sm btn-accent hover:bg-accent/90 mr-2"
                             >
                               <FiUpload className="mr-1" /> Replace
                             </button>
                             <button
                               onClick={() => removeArrayItem('images', index)}
-                              className="btn btn-sm btn-error"
+                              className="btn btn-sm btn-error hover:bg-error/90"
                             >
                               <FiTrash2 className="mr-1" /> Remove
                             </button>
@@ -662,11 +664,11 @@ const Profile = () => {
                     ))}
                     {(!editedUser.images || editedUser.images.length === 0) && (
                       <div
-                        className="aspect-square rounded-lg border-2 border-dashed border-base-300 flex flex-col items-center justify-center cursor-pointer hover:bg-base-200 transition-colors"
+                        className="aspect-square rounded-lg border-2 border-dashed border-slate-600 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-700/50 transition-colors"
                         onClick={() => triggerFileInput()}
                       >
-                        <FiUpload className="text-3xl text-base-content/50 mb-2" />
-                        <p className="text-base-content/50">Click to upload images</p>
+                        <FiUpload className="text-3xl text-slate-400 mb-2" />
+                        <p className="text-slate-400">Click to upload images</p>
                       </div>
                     )}
                   </div>
@@ -678,17 +680,18 @@ const Profile = () => {
                           <img
                             src={image}
                             alt={`Gallery item ${index + 1}`}
-                            className="object-cover w-full h-full"
+                            className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                           />
+                          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-all"></div>
                         </div>
                       ))
                     ) : (
                       <div className="col-span-2 aspect-video rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 flex flex-col items-center justify-center">
-                        <FiPlus className="text-4xl text-base-content/30 mb-2" />
-                        <p className="text-base-content/50">No images added yet</p>
+                        <FiPlus className="text-4xl text-slate-400 mb-2" />
+                        <p className="text-slate-400">No images added yet</p>
                         <button
                           onClick={() => setIsEditing(true)}
-                          className="btn btn-sm btn-primary mt-4"
+                          className="btn btn-sm btn-primary hover:bg-primary/90 mt-4"
                         >
                           <FiPlus className="mr-1" /> Add Images
                         </button>
@@ -700,22 +703,24 @@ const Profile = () => {
             </div>
 
             {/* Contact Info Section */}
-            <div className="card bg-base-100/90 backdrop-blur-sm shadow-xl border border-white/10">
+            <div className="card bg-slate-800/80 backdrop-blur-sm shadow-xl border border-white/10">
               <div className="card-body">
-                <h2 className="card-title">Contact Information</h2>
+                <h2 className="card-title text-white">Contact Information</h2>
                 <div className="space-y-4">
                   <div>
-                    <div className="text-sm text-base-content/50">Email</div>
+                    <div className="text-sm text-slate-400 flex items-center">
+                      <FiMail className="mr-2" /> Email
+                    </div>
                     {isEditing ? (
                       <input
                         type="email"
                         name="emailId"
                         value={editedUser.emailId || ''}
                         onChange={handleEditChange}
-                        className="input input-bordered w-full"
+                        className="input input-bordered w-full bg-slate-700/50 border-slate-600 focus:border-primary focus:ring-1 focus:ring-primary text-white"
                       />
                     ) : (
-                      <div className="text-base-content">{user.emailId}</div>
+                      <div className="text-white">{user.emailId}</div>
                     )}
                   </div>
                 </div>
@@ -728,4 +733,4 @@ const Profile = () => {
   )
 }
 
-export default Profile
+export default Profile;

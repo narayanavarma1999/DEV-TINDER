@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  UserIcon,
   ChatBubbleBottomCenterTextIcon,
   XMarkIcon,
   ArrowPathIcon,
@@ -237,10 +236,10 @@ const Connections = () => {
             </motion.p>
           </div>
 
-          <div className="w-10"></div> 
+          <div className="w-10"></div>
         </div>
 
-  
+
         <div className="flex justify-center gap-4 mb-6">
           <button
             onClick={() => setActiveTab('all')}
