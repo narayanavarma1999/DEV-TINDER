@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchRequests, reviewRequest } from "../../utils/services/api.service";
 import { useDispatch } from "react-redux";
 import { addRequests } from "../../utils/appstore/requestslice";
-import { REVIEW_ACCEPTED, REVIEW_DECLINED } from "../../utils/constants/constants";
+import { REVIEW_STATUS_ACCEPTED, REVIEW_STATUS_DECLINED } from "../../utils/constants/constants";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -143,14 +143,14 @@ function ReceivedConnectionRequests() {
 
                                     <div className="flex space-x-2">
                                         <button
-                                            onClick={() => handleAccept(REVIEW_ACCEPTED, request._id)}
+                                            onClick={() => handleAccept(REVIEW_STATUS_ACCEPTED, request._id)}
                                             disabled={processing}
                                             className={`btn btn-sm btn-primary px-4 ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         >
                                             {processing ? 'Processing...' : 'Accept'}
                                         </button>
                                         <button
-                                            onClick={() => handleDecline(REVIEW_DECLINED, request._id)}
+                                            onClick={() => handleDecline(REVIEW_STATUS_DECLINED, request._id)}
                                             disabled={processing}
                                             className={`btn btn-sm btn-outline px-4 ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         >

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   HeartIcon,
   XMarkIcon,
@@ -11,70 +12,28 @@ import {
   ChatBubbleBottomCenterTextIcon
 } from '@heroicons/react/24/solid';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getUserFeed, sendRequest } from '../../utils/services/api.service';
+import { addFeed, removeUserFromFeed } from '../../utils/appstore/feedslice'
+import { SEND_REQUEST_STATUS_IGNORED, SEND_REQUEST_STATUS_INTERESTED } from '../../utils/constants/constants';
 
 
 const Feed = () => {
+
   const [profiles, setProfiles] = useState([]);
   const [currentProfileIndex, setCurrentProfileIndex] = useState(0);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [connections, setConnections] = useState([]);
-  const [showMatchModal, setShowMatchModal] = useState(false);
-  const [matchedProfile, setMatchedProfile] = useState(null);
   const [swipeDirection, setSwipeDirection] = useState(null);
   const [isSwiping, setIsSwiping] = useState(false);
+  const dispatch = useDispatch()
 
-  // Mock data for demonstration
-  const mockProfiles = [
-    {
-      id: 1,
-      name: "Alex",
-      age: 28,
-      location: "San Francisco, 5 miles away",
-      about: "Full-stack developer specializing in React and Node.js. Love open source contributions and hackathons. When not coding, you can find me hiking or playing guitar.",
-      interests: ["React", "Node.js", "TypeScript", "GraphQL", "Docker"],
-      images: [
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
-        "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
-        "https://images.unsplash.com/photo-1524250502761-1ac6f2e30d43?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-      ]
-    },
-    {
-      id: 2,
-      name: "Sarah",
-      age: 25,
-      location: "San Francisco, 2 miles away",
-      about: "Frontend engineer with a passion for design systems and UI/UX. Currently working on a startup that helps developers build better portfolios. Coffee enthusiast ☕️",
-      interests: ["JavaScript", "CSS", "Design Systems", "Figma", "UI/UX"],
-      images: [
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80",
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
-        "https://images.unsplash.com/photo-1554151228-14d9def656e4?ixlib=rb-1.2.1&auto=format&fit=crop&w=633&q=80"
-      ]
-    },
-    {
-      id: 3,
-      name: "Jamie",
-      age: 30,
-      location: "Oakland, 8 miles away",
-      about: "DevOps engineer with 5+ years experience. Kubernetes, AWS, and infrastructure as code are my jam. Let's talk about scaling systems and the best tacos in the Bay Area!",
-      interests: ["Kubernetes", "AWS", "Terraform", "CI/CD", "Python"],
-      images: [
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
-        "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80",
-        "https://images.unsplash.com/photo-1480455624313-e29b44bbfde1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80"
-      ]
-    }
-  ];
-
-  // Fetch profiles from API
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
         setIsLoading(true);
-        // const response = await axios.get('your-api-endpoint');
-        // setProfiles(response.data);
-        setProfiles(mockProfiles); // Using mock data for now
+        const response = await getUserFeed();
+        setProfiles(response.data);
+        dispatch(addFeed(response.data))
       } catch (error) {
         console.error('Error fetching profiles:', error);
       } finally {
@@ -85,35 +44,22 @@ const Feed = () => {
     fetchProfiles();
   }, []);
 
-  const handleSwipe = async (action) => {
+  const handleSwipe = async (action, userId) => {
     if (profiles.length === 0) return;
 
-    const currentProfile = profiles[currentProfileIndex];
-    setSwipeDirection(action === 'like' ? 'right' : 'left');
+    setSwipeDirection(action === SEND_REQUEST_STATUS_INTERESTED ? 'right' : 'left');
     setIsSwiping(true);
+    dispatch(removeUserFromFeed(userId))
+    setProfiles(prev => prev.filter(req => req._id !== userId))
+    await sendRequest(action, userId)
 
     try {
-      if (action === 'like') {
-        // const response = await axios.post('your-api-endpoint/likes', {
-        //   profileId: currentProfile.id
-        // });
-
-        // Mock response
-        const mockResponse = { data: { isMatch: Math.random() > 0.7 } };
-
-        if (mockResponse.data.isMatch) {
-          setMatchedProfile(currentProfile);
-          setShowMatchModal(true);
-          setConnections([...connections, currentProfile]);
-        }
-      }
 
       setTimeout(() => {
         if (currentProfileIndex < profiles.length - 1) {
           setCurrentProfileIndex(currentProfileIndex + 1);
           setCurrentImageIndex(0);
         } else {
-          // In a real app, you would fetch more profiles
           setCurrentProfileIndex(0);
           setCurrentImageIndex(0);
         }
@@ -233,13 +179,13 @@ const Feed = () => {
             animate={{ scale: 1 }}
             className="text-2xl font-bold"
           >
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-yellow-300 to-pink-300">DevTinder</span>
+            <span className="bg-clip-text text-3xl text-transparent bg-gradient-to-r from-yellow-300 to-pink-300">DevTinder</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-xs text-white/70"
+            className="bg-clip-text text-sm  text-transparent font-semibold text-white/70"
           >
             Connect with fellow developers
           </motion.p>
@@ -275,8 +221,8 @@ const Feed = () => {
               {/* Profile Image */}
               <div className="relative h-3/4 w-full">
                 <img
-                  src={currentProfile.images[currentImageIndex]}
-                  alt={currentProfile.name}
+                  src={currentProfile?.images[currentImageIndex] || 'data:image/jpeg;base64,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'}
+                  alt={currentProfile.fullName}
                   className="w-full h-full object-cover"
                 />
 
@@ -321,7 +267,7 @@ const Feed = () => {
                         transition={{ delay: 0.2 }}
                         className="text-3xl font-bold text-white"
                       >
-                        {currentProfile.name}, <span className="font-medium">{currentProfile.age}</span>
+                        {currentProfile?.fullName}, <span className="font-medium">{currentProfile?.age}</span>
                       </motion.h2>
                       <motion.div
                         initial={{ y: 20, opacity: 0 }}
@@ -330,7 +276,7 @@ const Feed = () => {
                         className="flex items-center mt-1"
                       >
                         <MapPinIcon className="h-5 w-5 mr-1 text-yellow-300" />
-                        <span className="text-white/90">{currentProfile.location}</span>
+                        <span className="text-white/90">{currentProfile?.location}</span>
                       </motion.div>
                     </div>
                     <motion.div
@@ -402,7 +348,7 @@ const Feed = () => {
                   transition={{ delay: 0.3 }}
                   className="text-white/80"
                 >
-                  {currentProfile.about}
+                  {currentProfile?.about}
                 </motion.p>
 
                 <motion.div
@@ -440,7 +386,7 @@ const Feed = () => {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => handleSwipe('skip')}
+          onClick={() => handleSwipe(SEND_REQUEST_STATUS_IGNORED, currentProfile._id)}
           className="btn btn-circle btn-lg bg-white/10 hover:bg-white/20 border-white/20 text-white shadow-lg"
         >
           <XMarkIcon className="h-8 w-8" />
@@ -457,79 +403,13 @@ const Feed = () => {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => handleSwipe('like')}
+          onClick={() => handleSwipe(SEND_REQUEST_STATUS_INTERESTED, currentProfile._id)}
           className="btn btn-circle btn-lg bg-gradient-to-br from-yellow-300 to-pink-400 border-none text-white shadow-lg hover:shadow-xl"
         >
           <HeartIcon className="h-8 w-8" />
         </motion.button>
       </motion.div>
 
-      {/* Match Modal */}
-      {showMatchModal && matchedProfile && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
-        >
-          <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            className="bg-gradient-to-br from-pink-600 to-purple-600 rounded-3xl p-8 max-w-md w-full text-center shadow-2xl"
-          >
-            <motion.div
-              animate={{
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
-              }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-              className="mb-6"
-            >
-              <HeartIcon className="h-16 w-16 mx-auto text-white" />
-            </motion.div>
-            <h2 className="text-3xl font-bold text-white mb-4">It's a Match!</h2>
-            <p className="text-white/90 mb-6">You and {matchedProfile.name} have liked each other.</p>
-
-            <div className="flex justify-center space-x-6 mb-8">
-              <motion.div
-                whileHover={{ y: -5 }}
-                className="w-24 h-24 rounded-full border-4 border-white overflow-hidden"
-              >
-                <img
-                  src={matchedProfile.images[0]}
-                  alt={matchedProfile.name}
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
-              <motion.div
-                whileHover={{ y: -5 }}
-                className="w-24 h-24 rounded-full border-4 border-white overflow-hidden"
-              >
-                <div className="w-full h-full bg-gray-300 flex items-center justify-center">
-                  <UserIcon className="h-12 w-12 text-gray-500" />
-                </div>
-              </motion.div>
-            </div>
-
-            <div className="flex justify-center space-x-4">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowMatchModal(false)}
-                className="btn btn-ghost border-white text-white hover:bg-white/10"
-              >
-                Keep Browsing
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="btn btn-white text-pink-600 hover:bg-white/90"
-              >
-                Send Message
-              </motion.button>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
     </div>
   );
 };

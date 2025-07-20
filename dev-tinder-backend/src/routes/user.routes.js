@@ -3,7 +3,7 @@ const User = require('../models/user.model');
 const { userAuth } = require('../middlewares/user.auth');
 const ConnectionRequest = require('../models/connection.request.model');
 const STATUS = require('../utils/connection.status.constants');
-const { USER_SAFE_DATA, CONNECTION_USER_FIELDS } = require('../utils/constants');
+const { USER_SAFE_DATA, CONNECTION_USER_FIELDS, USER_INCLUDED_FIELDS } = require('../utils/constants');
 const userRouter = express.Router()
 
 /* 
@@ -92,8 +92,10 @@ userRouter.get('/connections', userAuth, async (req, res) => {
             }]
         },
         )
-            .populate('fromUserId', ["fullName", "firstName", "lastName", "photoUrl", "age", "interests"])
-            .populate('toUserId', ["fullName", "firstName", "lastName", "photoUrl", "age", "interests"])
+            .populate('fromUserId', USER_INCLUDED_FIELDS)
+            .populate('toUserId', USER_INCLUDED_FIELDS)
+
+
 
         const data = connections.map(connection => {
             if ((connection.fromUserId._id.toString() === userId.toString()) || (connection.toUserId._id.toString() === userId.toString())) {
@@ -102,7 +104,7 @@ userRouter.get('/connections', userAuth, async (req, res) => {
         })
 
         const userConnections = data.map(connection => {
-            return connection.fromUserId._id === userId ? connection.toUserId : connection.fromUserId;
+            return (connection.fromUserId._id.toString() === userId.toString()) ? connection.toUserId : connection.fromUserId;
         });
 
         res.status(200).json({ data: userConnections })

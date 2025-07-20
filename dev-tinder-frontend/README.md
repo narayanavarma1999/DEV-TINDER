@@ -24,4 +24,5 @@
 -  Toast on successfull submission of user details  
 -  Implemented Connection Component
 -  Implemented Connection Requests Component
+-  Implemented functionality for accept / decline requests   received from other users
       
