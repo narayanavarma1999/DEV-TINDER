@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT, VITE_REACT_APP_FEED, VITE_REACT_APP_EDIT_PROFILE, VITE_REACT_APP_IMAGE_UPLOAD, VITE_REACT_APP_USER_CONNECTIONS, VITE_REACT_APP_REQUEST_CONNECTIONS } from '../constants/constants'
+import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT, VITE_REACT_APP_FEED, VITE_REACT_APP_EDIT_PROFILE, VITE_REACT_APP_IMAGE_UPLOAD, VITE_REACT_APP_USER_CONNECTIONS, VITE_REACT_APP_REQUEST_CONNECTIONS, VITE_REACT_APP_REVIEW_REQUESTS } from '../constants/constants'
 
 
 const loginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_LOGIN;
@@ -11,6 +11,7 @@ const editProfileUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_EDIT_PROFILE;
 const imageUploadUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_IMAGE_UPLOAD;
 const userConnectionsUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_USER_CONNECTIONS;
 const requestConnectionsUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_REQUEST_CONNECTIONS;
+const reviewRequestsUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_REVIEW_REQUESTS;
 
 function parseFullName(name) {
 
@@ -46,7 +47,6 @@ export const registerUser = async (name, emailId, password) => {
         if (response.data === EMAIL_EXISTS) {
             return { success: false, message: data || 'Registration failed' };
         }
-        await loginUser(emailId, password)
         return { success: true, data };
     } catch (error) {
         return { success: false, message: error.message };
@@ -127,5 +127,16 @@ export const fetchRequests = async () => {
         return response.data
     } catch (error) {
         console.log(`error while fetching received requests:${error.message}`)
+    }
+}
+
+export const reviewRequest = async (status, id) => {
+    try {
+        const reviewUrl = `${reviewRequestsUrl}/${status}/${id}`
+        const reviewResponse = await axios.post(reviewUrl, {}, { withCredentials: true })
+        return reviewResponse.data
+    }
+    catch (error) {
+        console.log(`Error while reviewing request:${error.message}`)
     }
 }

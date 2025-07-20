@@ -45,7 +45,7 @@ revirewRequestRouter.post('/:status/:requestId', userAuth, async (req, res) => {
 
         const fromUser = await User.findById(data.fromUserId)
 
-        const message = status === STATUS.ACCEPTED ? `You have accepted ${fromUser.firstName} Connection Request` : `${fromUser.firstName} Connection request has been declined`
+        const message = status === STATUS.ACCEPTED ? `You have accepted ${fromUser.firstName} Connection Request` : `${fromUser.firstName} Connection request has been Declined`
 
         res.status(200).json({ message, data })
 

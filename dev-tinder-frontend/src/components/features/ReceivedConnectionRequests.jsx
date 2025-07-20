@@ -1,14 +1,19 @@
 import { useEffect, useState } from "react";
-import { fetchRequests } from "../../utils/services/api.service";
+import { fetchRequests, reviewRequest } from "../../utils/services/api.service";
 import { useDispatch } from "react-redux";
 import { addRequests } from "../../utils/appstore/requestslice";
+import { REVIEW_ACCEPTED, REVIEW_DECLINED } from "../../utils/constants/constants";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ReceivedConnectionRequests() {
+
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [processing, setProcessing] = useState(false);
     const dispatch = useDispatch();
 
-    const sendRequests = async () => {
+    const fetchData = async () => {
         try {
             setLoading(true);
             const response = await fetchRequests();
@@ -16,22 +21,42 @@ function ReceivedConnectionRequests() {
             setRequests(response.data);
         } catch (error) {
             console.error("Failed to fetch requests:", error);
+            toast.error("Failed to load connection requests");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleAccept = (requestId) => {
-        console.log("Accepting request:", requestId);
+    const handleAccept = async (status, requestId) => {
+        try {
+            setProcessing(true);
+            const response = await reviewRequest(status, requestId);
+            toast.success(response.message || "Connection accepted successfully!");
+            setRequests(prev => prev.filter(req => req._id !== requestId));
+        } catch (error) {
+            console.error("Failed to accept request:", error);
+            toast.error(error.response?.data?.message || "Failed to accept connection");
+        } finally {
+            setProcessing(false);
+        }
     };
 
-    const handleDecline = (requestId) => {
-        console.log("Declining request:", requestId);
-        // Add your decline logic here
+    const handleDecline = async (status, requestId) => {
+        try {
+            setProcessing(true);
+            const response = await reviewRequest(status, requestId);
+            toast.info(response.message || "Request declined");
+            setRequests(prev => prev.filter(req => req._id !== requestId));
+        } catch (error) {
+            console.error("Failed to decline request:", error);
+            toast.error(error.response?.data?.message || "Failed to decline connection");
+        } finally {
+            setProcessing(false);
+        }
     };
 
     useEffect(() => {
-        sendRequests();
+        fetchData();
     }, []);
 
     if (loading) {
@@ -44,15 +69,39 @@ function ReceivedConnectionRequests() {
 
     if (requests.length === 0) {
         return (
-            <div className="text-center py-10">
-                <div className="text-2xl font-bold text-gray-500 mb-2">Currently,No Connection Requests</div>
-                <p className="text-gray-400">When someone sends you a request, it will appear here</p>
+            <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 relative overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="absolute -top-32 -left-32 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl animate-float-slow"></div>
+                    <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl animate-float-medium"></div>
+                    <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-float-fast"></div>
+                </div>
+
+                <div className="max-w-3xl mx-auto p-4 relative z-10">
+                    <h1 className="bg-clip-text text-3xl text-transparent bg-gradient-to-r font-bold from-yellow-300 to-pink-300 ml-32 my-10">
+                        Currently, No Connection Requests
+                    </h1>
+                    <p className="text-yellow-300 ml-44">When someone sends you a request, you can view here</p>
+                </div>
             </div>
         );
     }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-800 to-pink-700 relative overflow-hidden">
+            {/* Toast Container */}
+            <ToastContainer
+                position="top-center"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
+
             {/* Animated background elements */}
             <div className="absolute inset-0 overflow-hidden">
                 <div className="absolute -top-32 -left-32 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl animate-float-slow"></div>
@@ -60,8 +109,10 @@ function ReceivedConnectionRequests() {
                 <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-float-fast"></div>
             </div>
 
-            <div className="max-w-3xl mx-auto p-4">
-                <h1 className="bg-clip-text text-3xl text-transparent bg-gradient-to-r font-bold from-yellow-300 to-pink-300 ml-60 my-10">Connection Requests</h1>
+            <div className="max-w-3xl mx-auto p-4 relative z-10">
+                <h1 className="bg-clip-text text-3xl text-transparent bg-gradient-to-r font-bold from-yellow-300 to-pink-300 ml-60 my-10">
+                    Connection Requests
+                </h1>
 
                 <div className="space-y-4">
                     {requests.map((request) => (
@@ -92,16 +143,18 @@ function ReceivedConnectionRequests() {
 
                                     <div className="flex space-x-2">
                                         <button
-                                            onClick={() => handleAccept(request._id)}
-                                            className="btn btn-sm btn-primary px-4"
+                                            onClick={() => handleAccept(REVIEW_ACCEPTED, request._id)}
+                                            disabled={processing}
+                                            className={`btn btn-sm btn-primary px-4 ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         >
-                                            Accept
+                                            {processing ? 'Processing...' : 'Accept'}
                                         </button>
                                         <button
-                                            onClick={() => handleDecline(request._id)}
-                                            className="btn btn-sm btn-outline px-4"
+                                            onClick={() => handleDecline(REVIEW_DECLINED, request._id)}
+                                            disabled={processing}
+                                            className={`btn btn-sm btn-outline px-4 ${processing ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         >
-                                            Decline
+                                            {processing ? 'Processing...' : 'Decline'}
                                         </button>
                                     </div>
                                 </div>

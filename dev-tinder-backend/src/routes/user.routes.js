@@ -102,7 +102,7 @@ userRouter.get('/connections', userAuth, async (req, res) => {
         })
 
         const userConnections = data.map(connection => {
-            return connection.fromUserId._id !== userId ? connection.toUserId : connection.fromUserId;
+            return connection.fromUserId._id === userId ? connection.toUserId : connection.fromUserId;
         });
 
         res.status(200).json({ data: userConnections })
