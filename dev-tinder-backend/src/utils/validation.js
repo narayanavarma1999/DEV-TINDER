@@ -6,12 +6,12 @@ const validateSignUpData = async (req) => {
 
     const { fullName, firstName, lastName, emailId, password } = req.body
 
-    if (!fullName || fullName.trim().length < 4) {
-        throw new Error('Full name is required and must be at least 4 characters long');
+    if (!fullName || fullName.trim().length < 2) {
+        throw new Error('Full name is required and must be at least 2 characters long');
     }
 
-    if (!firstName || firstName.trim().length < 4) {
-        throw new Error('first name is required and must be at least 4 characters long');
+    if (!firstName || firstName.trim().length < 2) {
+        throw new Error('first name is required and must be at least 2 characters long');
     }
 
     if (!validator.isEmail(emailId)) {

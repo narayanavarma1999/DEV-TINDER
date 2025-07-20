@@ -92,15 +92,20 @@ userRouter.get('/connections', userAuth, async (req, res) => {
             }]
         },
         )
-            .populate('fromUserId', ["firstName", "lastName", "photoUrl"])
-            .populate('toUserId', ["firstName", "lastName", "photoUrl"])
+            .populate('fromUserId', ["fullName", "firstName", "lastName", "photoUrl", "age", "interests"])
+            .populate('toUserId', ["fullName", "firstName", "lastName", "photoUrl", "age", "interests"])
 
         const data = connections.map(connection => {
-            if ((connection.fromUserId.toString() === userId.toString()) || (connection.toUserId.toString() === userId.toString())) {
+            if ((connection.fromUserId._id.toString() === userId.toString()) || (connection.toUserId._id.toString() === userId.toString())) {
                 return connection
             }
         })
-        res.status(200).json({ data })
+
+        const userConnections = data.map(connection => {
+            return connection.fromUserId._id !== userId ? connection.toUserId : connection.fromUserId;
+        });
+
+        res.status(200).json({ data: userConnections })
 
     } catch (error) {
         res.status(500).send('Error:' + error.message)

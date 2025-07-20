@@ -56,7 +56,7 @@ const SuccessPopup = ({ message, onClose }) => {
             }}
             className="btn btn-primary w-full bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-medium rounded-lg py-3 px-6 shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            Continue to Dashboard
+            Continue to Feed
           </button>
         </div>
         

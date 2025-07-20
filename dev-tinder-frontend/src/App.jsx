@@ -13,6 +13,7 @@ import ShimmerLoading from './utils/spinner/ShimmerLoadings';
 import LogoutPopup from './utils/popups/LogoutPopUp';
 import Profile from './components/features/Profile';
 import Connections from './components/features/Connections'
+import ReceivedConnectionRequests from './components/features/ReceivedConnectionRequests';
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
             <Route path="/logout" element={<LogoutPopup />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/connections" element={<Connections />} />
+            <Route path="/requests" element={<ReceivedConnectionRequests />} />
           </Routes>
         </AuthProvider>
       </Provider>

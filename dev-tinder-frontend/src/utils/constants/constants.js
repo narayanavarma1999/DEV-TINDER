@@ -8,4 +8,4 @@ export const VITE_REACT_APP_FEED = '/user/feed'
 export const VITE_REACT_APP_EDIT_PROFILE = '/profile/edit'
 export const VITE_REACT_APP_USER_CONNECTIONS = '/user/connections'
 export const VITE_REACT_APP_IMAGE_UPLOAD = '/image/upload'
-
+export const VITE_REACT_APP_REQUEST_CONNECTIONS = '/user/requests/received'

@@ -33,7 +33,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
   const handleRegisterSuccess = () => {
     setSuccessMessage('Your account has been created successfully!');
     setShowSuccess(true);
-    navigate('/home');
+    navigate('/feed');
   };
 
   const handleLoginError = (message) => {
@@ -96,7 +96,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Animated gradient background overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-pink-500/10 backdrop-blur-lg animate-gradient"></div>
-      
+
       {/* Main modal container */}
       <div className="relative w-full max-w-md">
         {/* Floating glass morphic card */}
@@ -105,7 +105,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-500 to-blue-500"></div>
           <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full bg-purple-400/20 blur-xl"></div>
           <div className="absolute -bottom-20 -left-20 w-40 h-40 rounded-full bg-blue-400/20 blur-xl"></div>
-          
+
           {/* Close button */}
           <button
             onClick={onClose}
@@ -118,7 +118,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
             {/* Header */}
             <div className="text-center mb-8">
               <div className="bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-               
+
               </div>
               <h2 className="text-3xl font-bold text-gray-900">
                 {mode === 'login' ? 'Welcome back!' : 'Join us today'}
@@ -272,7 +272,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
       {showSuccess && (
         <SuccessPopup
           message={successMessage}
-          onClose={() => {setShowSuccess(false)}}
+          onClose={() => { setShowSuccess(false) }}
         />
       )}
 
