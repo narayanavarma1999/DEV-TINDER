@@ -1,4 +1,5 @@
 const { mongooseConnection } = require('./config/database.connection')
+const { REMOTE_FRONT_WEB_IP } = require('./utils/constants');
 const User = require('./models/user.model')
 const express = require('express');
 const cookieParser = require('cookie-parser')
@@ -8,6 +9,7 @@ const imageUploadRouter = require('./routes/image.upload.route')
 const revirewRequestRouter = require('./routes/review.requests.route')
 const sendRequestRouter = require('./routes/send.requests.route')
 const userRouter = require('./routes/user.routes')
+const dotenv = require('dotenv');
 const cors = require('cors')
 
 /* 
@@ -15,11 +17,10 @@ const cors = require('cors')
 */
 const app = express()
 
-const dotenv = require('dotenv');
 
 dotenv.config()
 
-app.use(cors({ origin: process.env.DEV_TINDER_WEB, credentials: true }))
+app.use(cors({ origin: process.env.DEV_TINDER_WEB || REMOTE_FRONT_WEB_IP, credentials: true }))
 
 app.use(express.json())
 
