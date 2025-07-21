@@ -31,6 +31,19 @@ authRouter.post('/signup', async (req, res) => {
 
         const user = await userData.save(userData)
 
+        /*
+       *  create a JWT token  
+       */
+        const token = await user.getJWT()
+
+        res.cookie("token", token, {
+            expires: new Date(Date.now() + 8 * 360000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            path: '/'
+        })
+
         res.status(201).send(user)
     } catch (error) {
         console.log(`Error while creating  user:${error.message}`)

@@ -33,7 +33,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
   const handleRegisterSuccess = () => {
     setSuccessMessage('Your account has been created successfully!');
     setShowSuccess(true);
-    navigate('/feed');
+    navigate('/profile');
   };
 
   const handleLoginError = (message) => {
@@ -70,6 +70,7 @@ const AuthModal = ({ mode, onClose, openAuthModal, switchMode }) => {
 
       if (mode === "register") {
         const response = await registerUser(name, email, password);
+        dispatch(addUser(response.data))
         if (response.success) {
           handleRegisterSuccess();
         } else {
