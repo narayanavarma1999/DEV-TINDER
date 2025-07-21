@@ -1,9 +1,11 @@
 const mongoose = require("mongoose")
 const dotenv = require('dotenv')
+const { DATABASE_URI } = require('../utils/constants')
+
 
 dotenv.config()
 
-const url = process.env.MONGODB_URI
+const url = process.env.MONGODB_URI || DATABASE_URI
 
 async function mongooseConnection() {
 
