@@ -20,7 +20,7 @@ const app = express()
 
 dotenv.config()
 
-app.use(cors({ origin: process.env.DEV_TINDER_WEB || REMOTE_FRONT_WEB_IP, credentials: true }))
+app.use(cors({ origin: REMOTE_FRONT_WEB_IP || process.env.DEV_TINDER_WEB , credentials: true }))
 
 app.use(express.json())
 
