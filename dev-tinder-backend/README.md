@@ -80,4 +80,10 @@ The dev-tinder platform comprises of below listed functionalities
 - Add pagination to limit the extraction of results
 
 
-<!-- Implemetation changes for frontend view  -->
+<!-- DEPLOYMENT  -->
+
+- enable Ec2 instance in public in mongo atlas serve
+- enable to access the port from aws security inbound by adding port 3000 to security inbounds
+- install pm2 using npm install -g pm2
+- pm2 start npm -- start  
+- pm2 logs
