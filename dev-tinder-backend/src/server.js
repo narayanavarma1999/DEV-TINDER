@@ -1,5 +1,5 @@
 const { mongooseConnection } = require('./config/database.connection')
-const { REMOTE_FRONT_WEB_IP } = require('./utils/constants');
+const { REMOTE_FRONT_WEB_IP, LOCAL_WEB_APP } = require('./utils/constants');
 const User = require('./models/user.model')
 const express = require('express');
 const cookieParser = require('cookie-parser')
@@ -24,7 +24,25 @@ console.log(`environment path:${path}`)
 dotenv.config({
     path
 });
-app.use(cors({ origin: REMOTE_FRONT_WEB_IP || process.env.DEV_TINDER_WEB, credentials: true }))
+
+const allowedOrigins = [
+    LOCAL_WEB_APP,
+    REMOTE_FRONT_WEB_IP
+];
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+};
+
+
+app.use(cors(corsOptions))
 
 app.use(express.json())
 
