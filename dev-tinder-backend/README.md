@@ -86,4 +86,5 @@ The dev-tinder platform comprises of below listed functionalities
 - enable to access the port from aws security inbound by adding port 3000 to security inbounds
 - install pm2 using npm install -g pm2
 - pm2 start npm -- start  
-- pm2 logs
+- for custom name pm2 start npm --name "devtinder-backend" --start
+- pm2 logs, pm2 list, pm2 flush <name>, pm2 stop <name>, pm2 delete <name>
