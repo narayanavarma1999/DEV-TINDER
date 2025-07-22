@@ -17,10 +17,15 @@ const cors = require('cors')
 */
 const app = express()
 
+const path = process.env.NODE_ENV === "production" ? `.env.${process.env.NODE_ENV}` : `.env`
+
+dotenv.config({
+    path
+});
 
 dotenv.config()
 
-app.use(cors({ origin: REMOTE_FRONT_WEB_IP || process.env.DEV_TINDER_WEB , credentials: true }))
+app.use(cors({ origin: REMOTE_FRONT_WEB_IP || process.env.DEV_TINDER_WEB, credentials: true }))
 
 app.use(express.json())
 
@@ -49,6 +54,9 @@ app.use('/', (err, _req, res, _next) => {
 *   app creates an server with listen function with the 
 *   specified port to run the server on port to process the request 
 */
+
+console.log(`Environment:${process.env.NODE_ENV}`)
+console.log(`Database:${process.env.MONGODB_URI}`)
 
 const port = process.env.PORT || 3000
 
