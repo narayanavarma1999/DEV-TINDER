@@ -19,12 +19,11 @@ const app = express()
 
 const path = process.env.NODE_ENV === "production" ? `.env.${process.env.NODE_ENV}` : `.env`
 
+console.log(`environment path:${path}`)
+
 dotenv.config({
     path
 });
-
-dotenv.config()
-
 app.use(cors({ origin: REMOTE_FRONT_WEB_IP || process.env.DEV_TINDER_WEB, credentials: true }))
 
 app.use(express.json())
