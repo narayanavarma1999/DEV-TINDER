@@ -108,3 +108,15 @@ Modify the path using nginx path
         proxy_set_header Host $host;
         proxy_cache_bypass $http_upgrade;
     }
+
+Payment using RazorPay
+
+    -  Sign Up and complete the KYC
+    -  Create a Premium Page UI
+    -  Create a api for implementation of create order in backend
+    -  added my key and secrey for instance
+    -  Initialized Razorpay in utils
+    -  Creating model for saving payment information in payment
+    -  Creating order with Razorpay
+    -  make api request dynamic
+    -  while making payment using razorpay make sure  

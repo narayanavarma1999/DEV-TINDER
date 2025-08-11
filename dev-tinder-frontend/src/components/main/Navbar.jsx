@@ -46,6 +46,9 @@ const Navbar = ({ openAuthModal, handleLogout }) => {
               {user && <Link to="/profile" className="text-gray-700 text-sm  hover:text-primary font-semibold transition px-2 py-1">
                 Profile
               </Link>}
+              {user && <Link to="/premium" className="text-amber-500 text-sm  hover:text-primary font-semibold transition px-2 py-1">
+                Premium
+              </Link>}
             </div>
 
             {/* Auth Buttons or Profile */}

@@ -10,7 +10,8 @@ const revirewRequestRouter = require('./routes/review.requests.route')
 const sendRequestRouter = require('./routes/send.requests.route')
 const userRouter = require('./routes/user.routes')
 const dotenv = require('dotenv');
-const cors = require('cors')
+const cors = require('cors');
+const paymentRouter = require('./routes/payment');
 
 /* 
 *  creating an express instance for building application using express function
@@ -59,6 +60,8 @@ app.use('/request/send', sendRequestRouter)
 app.use('/request/review', revirewRequestRouter)
 
 app.use('/upload', imageUploadRouter)
+
+app.use('/payment', paymentRouter)
 
 
 app.use('/', (err, _req, res, _next) => {

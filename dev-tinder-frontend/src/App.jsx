@@ -14,6 +14,7 @@ import LogoutPopup from './utils/popups/LogoutPopUp';
 import Profile from './components/features/Profile';
 import Connections from './components/features/Connections'
 import ReceivedConnectionRequests from './components/features/ReceivedConnectionRequests';
+import Premium from './components/features/Premium';
 
 export default function App() {
   return (
@@ -32,6 +33,7 @@ export default function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/connections" element={<Connections />} />
             <Route path="/requests" element={<ReceivedConnectionRequests />} />
+            <Route path="/premium" element={<Premium />} />
           </Routes>
         </AuthProvider>
       </Provider>
