@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   ChatBubbleBottomCenterTextIcon,
   XMarkIcon,
@@ -37,11 +38,19 @@ const Connections = () => {
   };
 
   useEffect(() => {
-    if (!connectionsData) {
-      fetchConnections();
-    } else {
-      setConnections(connectionsData);
+    try {
+      setIsLoading(true)
+      if (!connectionsData) {
+        fetchConnections();
+      } else {
+        setConnections(connectionsData);
+      }
+    } catch (error) {
+      console.log(`error while fetching connections:${error.message}`)
+    } finally {
+      setIsLoading(false)
     }
+
   }, []);
 
   const handleUnmatch = (id) => {
@@ -320,23 +329,10 @@ const Connections = () => {
                   </div>
                 </div>
                 <div className="flex flex-col space-y-2 ml-3">
-                  <motion.button
-                    whileHover={{ scale: 1.1, backgroundColor: 'rgba(255, 255, 255, 0.2)' }}
-                    whileTap={{ scale: 0.9 }}
-                    className="btn btn-circle btn-sm btn-ghost text-white hover:bg-white/20"
-                    onClick={() => {/* Navigate to chat */ }}
-                  >
-                    <ChatBubbleBottomCenterTextIcon className="h-5 w-5" />
-                  </motion.button>
-                  <motion.button
-                    whileHover={{ scale: 1.1, backgroundColor: 'rgba(239, 68, 68, 0.3)' }}
-                    whileTap={{ scale: 0.9 }}
-                    className="btn btn-circle btn-sm btn-ghost text-white hover:bg-red-500/30"
-                    onClick={() => handleUnmatch(connection._id)}
-                  >
-                    <XMarkIcon className="h-5 w-5" />
-                  </motion.button>
                 </div>
+                <Link to={"/chat/" + connection._id}>
+                  <button className="btn btn-primary">Chat</button>
+                </Link>
               </motion.div>
             ))}
           </motion.div>

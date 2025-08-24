@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT, VITE_REACT_APP_FEED, VITE_REACT_APP_EDIT_PROFILE, VITE_REACT_APP_SEND_REQUESTS, VITE_REACT_APP_IMAGE_UPLOAD, VITE_REACT_APP_USER_CONNECTIONS, VITE_REACT_APP_REQUEST_CONNECTIONS, VITE_REACT_APP_REVIEW_REQUESTS } from '../constants/constants'
+import { EMAIL_EXISTS, VITE_REACT_APP_HOST, VITE_REACT_APP_LOGIN, VITE_REACT_APP_REGISTER, VITE_REACT_APP_PROFILE, VITE_REACT_APP_LOGOUT, VITE_REACT_APP_FEED, VITE_REACT_APP_EDIT_PROFILE, VITE_REACT_APP_SEND_REQUESTS, VITE_REACT_APP_IMAGE_UPLOAD, VITE_REACT_APP_USER_CONNECTIONS, VITE_REACT_APP_REQUEST_CONNECTIONS, VITE_REACT_APP_REVIEW_REQUESTS, VITE_REACT_APP_CHAT } from '../constants/constants'
 
 
 const loginUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_LOGIN;
@@ -13,6 +13,7 @@ const userConnectionsUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_USER_CONNECTIONS
 const requestConnectionsUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_REQUEST_CONNECTIONS;
 const reviewRequestsUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_REVIEW_REQUESTS;
 const sendRequestsUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_SEND_REQUESTS;
+const chatMessagesUrl = VITE_REACT_APP_HOST + VITE_REACT_APP_CHAT;
 
 function parseFullName(name) {
 
@@ -150,5 +151,18 @@ export const sendRequest = async (status, id) => {
         return response.data
     } catch (error) {
         console.log(`Error while sending request:${error.message}`)
+    }
+}
+
+export const chatMessages = async (targetUserId) => {
+    try {
+        const chatUrl = `${chatMessagesUrl}/${targetUserId}`
+        const response = await axios.get(chatUrl, {
+            withCredentials: true
+        })
+        console.log(`chat messages:${JSON.stringify(response)}`)
+        return response
+    } catch (error) {
+        console.log(`Error while fetching chat:${error.message}`)
     }
 }

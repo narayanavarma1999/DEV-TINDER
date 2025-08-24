@@ -1,6 +1,5 @@
 const { mongooseConnection } = require('./config/database.connection')
 const { REMOTE_FRONT_WEB_IP, LOCAL_WEB_APP } = require('./utils/constants');
-const User = require('./models/user.model')
 const express = require('express');
 const cookieParser = require('cookie-parser')
 const authRouter = require('./routes/auth.routes')
@@ -11,7 +10,9 @@ const sendRequestRouter = require('./routes/send.requests.route')
 const userRouter = require('./routes/user.routes')
 const dotenv = require('dotenv');
 const cors = require('cors');
+const http = require('http');
 const paymentRouter = require('./routes/payment');
+const { initializeSocket } = require('./utils/socket');
 
 /* 
 *  creating an express instance for building application using express function
@@ -69,22 +70,24 @@ app.use('/', (err, _req, res, _next) => {
     res.send("Something went wrong " + err.message)
 })
 
+const server = http.createServer(app);
+
 
 /* 
 *   app creates an server with listen function with the 
 *   specified port to run the server on port to process the request 
 */
 
-console.log(`Environment:${process.env.NODE_ENV}`)
-console.log(`Database:${process.env.MONGODB_URI}`)
+initializeSocket(server)
 
 const port = process.env.PORT || 3000
 
 mongooseConnection().then(() => {
     console.log(`Database Connection Established Successfully`)
-    app.listen(port, () => {
+    server.listen(port, () => {
         console.log(`Server is running on port: ${port} `)
     })
 }).catch((error) => {
     console.error(`Error while connecting to Database:${error.message}`)
 })
+

@@ -85,7 +85,7 @@ The dev-tinder platform comprises of below listed functionalities
 - enable Ec2 instance in public in mongo atlas serve
 - enable to access the port from aws security inbound by adding port 3000 to security inbounds
 - install pm2 using npm install -g pm2
-- pm2 start npm -- start  
+- pm2 start npm -- start
 - for custom name pm2 start npm --name "devtinder-backend" --start
 - pm2 logs, pm2 list, pm2 flush <name>, pm2 stop <name>, pm2 delete <name>
 - config nginx - /etc/nginx/sites-available/default
@@ -95,10 +95,9 @@ The dev-tinder platform comprises of below listed functionalities
 Frontend - http://13.234.76.11
 Backend - http://13.234.76.11:3000/
 
+Modify the path using nginx path
 
-Modify the path using nginx path 
-
- server_name http://13.234.76.11;
+server_name http://13.234.76.11;
 
     location /api/ {
         proxy_pass http://localhost:3000/;  # Pass the request to the Node.js app
@@ -119,4 +118,10 @@ Payment using RazorPay
     -  Creating model for saving payment information in payment
     -  Creating order with Razorpay
     -  make api request dynamic
-    -  while making payment using razorpay make sure  
+    -  while making payment using razorpay make sure
+
+<!-- BUILD UI for Real Time Chat application with WebSocket.io -->
+
+    - Buid a UI for a chat window on /chat/:targetUserId
+    - Setup socket.io for backend
+    - npm i socket.io

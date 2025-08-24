@@ -1,3 +1,13 @@
+import { io } from 'socket.io-client';
+
+export const createSocketConnection = () => {
+    return io(VITE_REACT_APP_HOST, {
+        transports: ['websocket', 'polling'],
+        autoConnect: true,
+        withCredentials: true
+    });
+};
+
 export const EMAIL_EXISTS = 'EmailId Already Exists'
 // export const VITE_REACT_APP_HOST = '/api'
 export const VITE_REACT_APP_HOST = 'http://localhost:3000'
@@ -14,5 +24,7 @@ export const VITE_REACT_APP_REVIEW_REQUESTS = '/request/review'
 export const VITE_REACT_APP_SEND_REQUESTS = '/request/send'
 export const REVIEW_STATUS_ACCEPTED = "accepted"
 export const REVIEW_STATUS_DECLINED = "rejected"
+export const VITE_REACT_APP_CHAT = '/chat'
 export const SEND_REQUEST_STATUS_INTERESTED = "interested"
 export const SEND_REQUEST_STATUS_IGNORED = "ignored"
+

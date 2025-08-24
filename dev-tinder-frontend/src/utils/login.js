@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { EMAIL_EXISTS } from './constants/constants';
 
+
 const loginUrl = import.meta.env.VITE_REACT_APP_HOST + import.meta.env.VITE_REACT_APP_LOGIN;
 const registerUrl = import.meta.env.VITE_REACT_APP_HOST + import.meta.env.VITE_REACT_APP_REGISTER;
 
@@ -43,3 +44,5 @@ export const registerUser = async (name, emailId, password) => {
         return { success: false, message: error.message };
     }
 }
+
+
