@@ -1,33 +1,35 @@
-const express = require("express")
-const { Chat } = require("../models/chat.model")
-const { userAuth } = require("../middlewares/user.auth")
-const chatRouter = express.Router()
+const express = require("express");
+const { Chat } = require("../models/chat.model");
+const { userAuth } = require("../middlewares/user.auth");
 
-chatRouter.get("/chat/:targetUserId", userAuth, async (req, res) => {
+const chatRouter = express.Router();
 
-    const { targetUserId } = req.params
-
-    const userId = req.user._id
+chatRouter.get("/:targetUserId", userAuth, async (req, res) => {
+    const { targetUserId } = req.params;
+    const userId = req.user._id;
 
     try {
-        let chat = Chat.findOne({
-            participants: { $all: [userId, targetUserId] }
+        let chat = await Chat.findOne({
+            participants: { $all: [userId, targetUserId] },
         }).populate({
             path: "messages.senderId",
-            select: "firstName lastName"
-        })
+            select: "_id firstName lastName",
+        });
 
         if (!chat) {
+            // If no chat exists, create a new one
             chat = new Chat({
                 participants: [userId, targetUserId],
-                messages: []
-            })
+                messages: [],
+            });
+            await chat.save();
         }
-        await chat.save()
 
-        res.json({ chat })
+        res.json({ chat });
     } catch (error) {
-
+        console.log(`error while fetching chat: ${error.message}`);
+        res.status(500).json({ message: "Server error while fetching chat" });
     }
+});
 
-})
+module.exports = chatRouter;

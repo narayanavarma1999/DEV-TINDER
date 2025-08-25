@@ -28,28 +28,29 @@ const initializeSocket = (server) => {
         });
 
         socket.on('sendmessage', async (data) => {
-            const { id, firstName, userId, targetUserId, sender, text, time, isMe } = data
+            const { firstName, userId, targetUserId, text, time } = data
             console.log(`in send message emit call`)
             const room = [userId, targetUserId].sort().join('_')
-
-            console.log(`roomId===>>>send message emit --->${room}`)
+            console.log(`roomId===>>>send message emit --->${room}---> ${time}`)
             try {
                 let chat = await Chat.findOne({
                     participants: { $all: [userId, targetUserId] },
                 });
 
-                if (!chat) {
-                    chat = new Chat({
-                        participants: [userId, targetUserId],
-                        messages: [],
-                    });
-                }
+                    if (!chat) {
+                        chat = new Chat({
+                            participants: [userId, targetUserId],
+                            messages: [],
+                        });
+                    }
 
                 chat.messages.push({
                     senderId: userId,
                     text,
+                    time,
                 });
 
+                console.log(`CHAT ---> ${JSON.stringify(chat)}`)
                 await chat.save();
                 io.to(room).emit("messageReceived", { firstName, text })
             } catch (error) {

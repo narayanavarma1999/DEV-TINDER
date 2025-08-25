@@ -12,6 +12,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const http = require('http');
 const paymentRouter = require('./routes/payment');
+const chatRouter = require('./routes/chat');
 const { initializeSocket } = require('./utils/socket');
 
 /* 
@@ -63,6 +64,8 @@ app.use('/request/review', revirewRequestRouter)
 app.use('/upload', imageUploadRouter)
 
 app.use('/payment', paymentRouter)
+
+app.use('/chat', chatRouter)
 
 
 app.use('/', (err, _req, res, _next) => {

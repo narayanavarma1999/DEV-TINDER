@@ -160,8 +160,7 @@ export const chatMessages = async (targetUserId) => {
         const response = await axios.get(chatUrl, {
             withCredentials: true
         })
-        console.log(`chat messages:${JSON.stringify(response)}`)
-        return response
+        return response.data
     } catch (error) {
         console.log(`Error while fetching chat:${error.message}`)
     }
